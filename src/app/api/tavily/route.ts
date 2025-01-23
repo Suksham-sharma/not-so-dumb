@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import axios from "axios";
 
 const TAVILY_API_KEY = process.env.TAVILY_API_KEY;
 const TAVILY_API_URL = "https://api.tavily.com/search";
@@ -11,33 +12,25 @@ export async function POST(req: Request) {
   try {
     const { query, includeImages, includeImageDescriptions } = await req.json();
 
-    const response = await fetch(TAVILY_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "api-key": TAVILY_API_KEY as string,
-      },
-      body: JSON.stringify({
+    const response = await axios.post(
+      TAVILY_API_URL,
+      {
         query,
         include_answer: true,
         search_depth: "advanced",
         api_key: TAVILY_API_KEY,
         include_images: includeImages,
         include_image_descriptions: includeImageDescriptions,
-      }),
-    });
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "api-key": TAVILY_API_KEY,
+        },
+      }
+    );
 
-    if (!response.ok) {
-      const error = await response.json();
-      console.error("Tavily API Error Response:", {
-        status: response.status,
-        statusText: response.statusText,
-        error,
-      });
-      throw new Error(error.message || "Failed to get response from Tavily");
-    }
-
-    const data = await response.json();
+    const data = response.data;
 
     if (!data.results) {
       console.error("Invalid Tavily API response:", data);

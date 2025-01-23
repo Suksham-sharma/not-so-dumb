@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import axios from "axios";
 
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 const DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions";
@@ -7,10 +8,8 @@ if (!DEEPSEEK_API_KEY) {
   throw new Error("DEEPSEEK_API_KEY is not set in environment variables");
 }
 
-// Set response timeout to 30 seconds
 export const maxDuration = 30;
 
-// Configure the runtime to use edge for better streaming support
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
@@ -18,31 +17,29 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
-    const response = await fetch(DEEPSEEK_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
-      },
-      body: JSON.stringify({
+    const response = await axios.post(
+      DEEPSEEK_API_URL,
+      {
         model: "deepseek-reasoner",
         messages,
         stream: true,
         max_tokens: 4000,
         temperature: 0.7,
-      }),
-    });
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
+        },
+        responseType: "stream",
+      }
+    );
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || "Failed to get response from DeepSeek");
+    if (!response.data) {
+      throw new Error("No response data available");
     }
 
-    if (!response.body) {
-      throw new Error("No response body available");
-    }
-
-    const reader = response.body.getReader();
+    const reader = response.data.getReader();
     const encoder = new TextEncoder();
     const decoder = new TextDecoder();
 

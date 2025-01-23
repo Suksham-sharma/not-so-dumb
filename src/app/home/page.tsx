@@ -13,6 +13,7 @@ import {
   TavilyResponse,
   SearchResult,
 } from "../../types";
+import axios from "axios";
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -38,21 +39,7 @@ export default function Home() {
     null
   );
 
-  const suggestions: SuggestionType[] = [
-    {
-      label: "Podcast Outline",
-      prefix: "Create a detailed podcast outline for: ",
-    },
-    {
-      label: "YouTube Video Research",
-      prefix: "Research and outline a YouTube video about: ",
-    },
-    {
-      label: "Short Form Hook Ideas",
-      prefix: "Generate engaging hook ideas for short-form content about: ",
-    },
-    { label: "Newsletter Draft", prefix: "Write a newsletter draft about: " },
-  ];
+  const suggestions: SuggestionType[] = [];
 
   const handleSuggestionClick = (suggestion: SuggestionType) => {
     setSelectedSuggestion(suggestion.label);
@@ -95,22 +82,19 @@ export default function Home() {
 
     try {
       // Step 1: Search with Tavily
-      const searchResponse = await fetch("/api/tavily", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const searchResponse = await axios.post(
+        "/api/tavily",
+        {
           query: input,
           includeImages: true,
           includeImageDescriptions: true,
-        }),
-        signal: abortControllerRef.current.signal,
-      });
+        },
+        {
+          signal: abortControllerRef.current?.signal,
+        }
+      );
 
-      const searchData = await searchResponse.json();
-
-      if (!searchResponse.ok) {
-        throw new Error(searchData.error || "Failed to fetch search results");
-      }
+      const searchData = searchResponse.data;
 
       if (!searchData.results || searchData.results.length === 0) {
         throw new Error(
@@ -176,10 +160,9 @@ export default function Home() {
       };
 
       // Step 3: Get analysis from DeepSeek
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const response = await axios.post(
+        "/api/chat",
+        {
           messages: [
             userMessage,
             {
@@ -192,15 +175,14 @@ export default function Home() {
               content: reasoningInput,
             },
           ],
-        }),
-        signal: abortControllerRef.current.signal,
-      });
+        },
+        {
+          responseType: "stream",
+          signal: abortControllerRef.current?.signal,
+        }
+      );
 
-      if (!response.ok) {
-        throw new Error("Failed to generate report. Please try again.");
-      }
-
-      const reader = response.body?.getReader();
+      const reader = response.data.getReader();
       if (!reader) throw new Error("No reader available");
 
       while (true) {
