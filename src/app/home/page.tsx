@@ -14,6 +14,7 @@ import {
   SearchResult,
 } from "../../types";
 import axios from "axios";
+import AnimatedBlobs from "@/components/AnimatedBlobs";
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -38,8 +39,6 @@ export default function Home() {
   const [selectedSuggestion, setSelectedSuggestion] = useState<string | null>(
     null
   );
-
-  const suggestions: SuggestionType[] = [];
 
   const handleSuggestionClick = (suggestion: SuggestionType) => {
     setSelectedSuggestion(suggestion.label);
@@ -122,7 +121,6 @@ export default function Home() {
         return updated;
       });
 
-      // Step 2: Format search results for DeepSeek
       const searchContext = resultsWithImages
         .map(
           (result: SearchResult, index: number) =>
@@ -136,7 +134,6 @@ export default function Home() {
         ? `\nTavily's Direct Answer: ${searchData.answer}\n\n`
         : "";
 
-      // Add sources table at the end
       const sourcesTable =
         `\n\n## Sources\n| Number | Source | Description |\n|---------|---------|-------------|\n` +
         resultsWithImages
@@ -159,7 +156,6 @@ export default function Home() {
         reasoningInput,
       };
 
-      // Step 3: Get analysis from DeepSeek
       const response = await axios.post(
         "/api/chat",
         {
@@ -279,42 +275,44 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white bg-[linear-gradient(to_right,#80808033_1px,transparent_1px),linear-gradient(to_bottom,#80808033_1px,transparent_1px)] bg-[size:70px_70px] relative overflow-hidden">
+      <AnimatedBlobs />
       <TopBar />
-      <div className="pt-14 pb-24">
-        {" "}
-        {/* Add padding top to account for fixed header */}
-        <main className="max-w-3xl mx-auto p-8">
+      <div className="pt-14 pb-24 relative">
+        <div className="absolute inset-0 bg-white/50" />
+        <motion.div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-purple-300 to-blue-100/30 blur-3xl" />
+        <main className="max-w-3xl mx-auto p-4 relative">
           <AnimatePresence mode="wait">
             {!hasSubmitted ? (
-              <motion.div
-                className="min-h-screen flex flex-col items-center justify-center"
-                initial={{ opacity: 1 }}
-                exit={{ opacity: 0, y: -50 }}
-                transition={{ duration: 0.3 }}
-              >
+              <div className="min-h-screen flex flex-col items-center justify-center">
                 <div className="text-center mb-12">
-                  <div className="inline-block px-4 py-1.5 bg-gray-900 text-white rounded-full text-sm font-medium mb-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="inline-block px-4 py-1.5 bg-yellow-300 text-black rounded-full text-sm font-bold mb-6 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
+                  >
                     Powered by notSoDumb
-                  </div>
-                  <h1 className="text-5xl font-serif text-gray-900 mb-4 tracking-tight">
-                    Your AI Powered Content Research Assistant
-                  </h1>
-                  <p className="text-xl text-gray-600 font-light max-w-2xl mx-auto leading-relaxed">
-                    Do research for content in seconds, so you can spend more
-                    time going viral.
-                  </p>
+                  </motion.div>
+                  <motion.p
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="text-xl text-gray-600 font-light max-w-2xl mx-auto leading-relaxed"
+                  >
+                    Do research for your needs in seconds, so you can spend more
+                    time doing what actually matters.
+                  </motion.p>
                 </div>
                 <SearchInput
                   input={input}
                   setInput={setInput}
                   isLoading={isLoading}
                   handleSubmit={handleSubmit}
-                  suggestions={suggestions}
                   selectedSuggestion={selectedSuggestion}
                   handleSuggestionClick={handleSuggestionClick}
                 />
-              </motion.div>
+              </div>
             ) : (
               <motion.div
                 className="space-y-6 pb-32"
@@ -323,7 +321,10 @@ export default function Home() {
                 transition={{ duration: 0.3 }}
               >
                 {chatSections.map((section, index) => (
-                  <div key={index}>
+                  <div
+                    key={index}
+                    className="border-2 border-black bg-white rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-6 transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
+                  >
                     <ResultsDisplay
                       section={section}
                       isLoading={isLoading}
@@ -354,12 +355,12 @@ export default function Home() {
       {hasSubmitted && (
         <div className="fixed bottom-6 left-0 right-0 flex justify-center">
           <form onSubmit={handleSubmit} className="w-full max-w-[704px] mx-4">
-            <div className="relative bg-gray-50 rounded-xl shadow-md border border-gray-300">
+            <div className="relative bg-orange-300 rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask a question..."
-                className="w-full p-5 pr-32 rounded-xl border-2 border-transparent focus:border-gray-900 focus:shadow-lg focus:outline-none resize-none h-[92px] bg-gray-50 transition-all duration-200"
+                className="w-full p-5 pr-32 rounded-lg bg-orange-300 border-none outline-none resize-none h-[92px] text-black placeholder-black/70 font-heading text-lg transition-all duration-200"
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
@@ -371,12 +372,11 @@ export default function Home() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="px-6 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium relative overflow-hidden group"
+                  className="px-6 py-2.5 bg-green-400 text-black rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none active:translate-x-[3px] active:translate-y-[3px] active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed text-sm font-heading font-bold"
                 >
                   <span className="relative z-10">
                     {isLoading ? "Thinking..." : "Send"}
                   </span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:via-white/15 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
                 </button>
               </div>
             </div>
@@ -387,14 +387,14 @@ export default function Home() {
       {/* Modal for Tavily Data */}
       {showTavilyModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+          <div className="bg-white rounded-lg border-2 border-black p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">
+              <h3 className="text-lg font-heading  text-black">
                 Full Tavily Response
               </h3>
               <button
                 onClick={() => setShowTavilyModal(false)}
-                className="text-gray-600 hover:text-gray-700"
+                className="text-black hover:text-gray-700 border-2 border-black rounded-lg p-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
               >
                 <svg
                   className="w-6 h-6"
@@ -411,7 +411,7 @@ export default function Home() {
                 </svg>
               </button>
             </div>
-            <pre className="whitespace-pre-wrap text-sm text-gray-600 font-mono">
+            <pre className="whitespace-pre-wrap text-sm text-black font-mono bg-yellow-100 p-4 rounded-lg border-2 border-black">
               {JSON.stringify(selectedMessageData?.tavily, null, 2)}
             </pre>
           </div>
@@ -421,14 +421,14 @@ export default function Home() {
       {/* Modal for Reasoning Input */}
       {showReasoningModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+          <div className="bg-white rounded-lg border-2 border-black p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">
+              <h3 className="text-lg font-heading  text-black">
                 Full Reasoning Input
               </h3>
               <button
                 onClick={() => setShowReasoningModal(false)}
-                className="text-gray-600 hover:text-gray-700"
+                className="text-black hover:text-gray-700 border-2 border-black rounded-lg p-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
               >
                 <svg
                   className="w-6 h-6"
@@ -445,7 +445,7 @@ export default function Home() {
                 </svg>
               </button>
             </div>
-            <pre className="whitespace-pre-wrap text-sm text-gray-600 font-mono">
+            <pre className="whitespace-pre-wrap text-sm text-black font-mono bg-yellow-100 p-4 rounded-lg border-2 border-black">
               {selectedMessageData?.reasoning}
             </pre>
           </div>

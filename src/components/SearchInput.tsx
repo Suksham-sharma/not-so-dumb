@@ -6,28 +6,35 @@ interface SearchInputProps {
   setInput: (value: string) => void;
   isLoading: boolean;
   handleSubmit: (e: React.FormEvent) => void;
-  suggestions: SuggestionType[];
   selectedSuggestion: string | null;
   handleSuggestionClick: (suggestion: SuggestionType) => void;
 }
+
+const suggestions: SuggestionType[] = [
+  { label: "Compare", prefix: "Compare " },
+  { label: "Explain", prefix: "Explain " },
+  { label: "Analyze", prefix: "Analyze " },
+  { label: "Summarize", prefix: "Summarize " },
+  { label: "Research", prefix: "Research " },
+  { label: "How to", prefix: "How to " },
+];
 
 const SearchInput: React.FC<SearchInputProps> = ({
   input,
   setInput,
   isLoading,
   handleSubmit,
-  suggestions,
   selectedSuggestion,
   handleSuggestionClick,
 }) => {
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-[704px] mx-4">
-      <div className="relative bg-gray-50 rounded-xl shadow-md border border-gray-300">
+      <div className="relative bg-orange-300 rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask a question..."
-          className="w-full p-5 pr-32 rounded-xl border-2 border-transparent focus:border-gray-900 focus:shadow-lg focus:outline-none resize-none h-[92px] bg-gray-50 transition-all duration-200 text-gray-900 placeholder-gray-500"
+          className="w-full p-5 pr-32 rounded-lg bg-orange-300 border-none outline-none resize-none h-[92px] text-black placeholder-black/70 font-heading text-lg transition-all duration-200"
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
@@ -39,12 +46,11 @@ const SearchInput: React.FC<SearchInputProps> = ({
           <button
             type="submit"
             disabled={isLoading}
-            className="px-6 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium relative overflow-hidden group"
+            className="px-6 py-2.5 bg-green-400 text-black rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none active:translate-x-[3px] active:translate-y-[3px] active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed text-sm font-heading font-bold"
           >
             <span className="relative z-10">
               {isLoading ? "Thinking..." : "Send"}
             </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:via-white/15 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
           </button>
         </div>
       </div>
@@ -55,10 +61,10 @@ const SearchInput: React.FC<SearchInputProps> = ({
           <button
             key={suggestion.label}
             onClick={() => handleSuggestionClick(suggestion)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+            className={`px-4 py-2 rounded-base text-sm font-heading transition-all duration-200 border-2 border-border shadow-shadow hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none ${
               selectedSuggestion === suggestion.label
-                ? "bg-gray-900 text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                ? "bg-blue-300 text-black"
+                : "bg-white text-black hover:bg-gray-100"
             }`}
           >
             {suggestion.label}
