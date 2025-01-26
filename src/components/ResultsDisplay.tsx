@@ -45,15 +45,15 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   onViewReasoningInput,
 }) => {
   return (
-    <div className="bg-transparent">
+    <div className="bg-transparent mx-4">
       {/* Query */}
-      <div className="mb-12">
-        <h2 className="text-3xl font-bold text-black mb-2">{section.query}</h2>
+      <div className="my-8 ">
+        <h2 className="text-4xl font-bold text-black mb-4">{section.query}</h2>
       </div>
 
       {/* Loading States */}
       {isLoading && (
-        <div className="mb-8 flex items-center gap-8 text-base font-heading text-black bg-white/80 p-6 rounded-xl">
+        <div className="mb-12 flex items-center gap-8 text-base font-heading text-black bg-white/80 p-8 rounded-xl shadow-lg">
           <LoadingIndicator text="Loading Sources" color="bg-blue-500" />
           <LoadingIndicator
             text="Reading Content"
@@ -70,7 +70,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
       {/* Search Results Loading State */}
       {section.isLoadingSources && (
-        <div className="mb-16 animate-pulse bg-white/80 p-6 rounded-xl">
+        <div className="mb-16 animate-pulse bg-white/80 p-8 rounded-xl shadow-lg">
           <div className="flex items-center gap-2 mb-6">
             <div className="w-6 h-6 bg-gray-200 rounded" />
             <div className="h-5 w-24 bg-gray-200 rounded" />
@@ -109,7 +109,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
       {/* Search Results */}
       {section.searchResults.length > 0 && (
-        <div className="mb-16 bg-white/80 p-6 rounded-xl">
+        <div className="mb-16 bg-white/80 p-8 rounded-xl shadow-lg">
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-3">
               <SourceIcon className="w-6 h-6 text-black" />
@@ -135,7 +135,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
       {/* Thinking Process Loading State */}
       {section.isLoadingThinking && (
-        <div className="mb-16 bg-white/80 p-6 rounded-xl">
+        <div className="mb-16 bg-white/80 p-8 rounded-xl shadow-lg">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-6 h-6 bg-gray-200 rounded" />
             <div className="h-5 w-36 bg-gray-200 rounded" />
@@ -152,7 +152,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
       {/* Thinking Process */}
       {section.reasoning && (
-        <div className="mb-16 bg-white/80 p-6 rounded-xl">
+        <div className="mb-16 bg-white/80 p-8 rounded-xl shadow-lg">
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-3">
               <ThinkingIcon className="w-6 h-6 text-black" />
@@ -208,7 +208,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
       {/* Final Report */}
       {section.response && (
-        <div className="mt-16 mb-20 bg-white/80 p-6 rounded-xl">
+        <div className="mt-16 mb-20 bg-white/80 p-8 rounded-xl shadow-lg">
           <div className="prose prose-blue max-w-none space-y-6 text-black font-heading [&>h1]:text-3xl [&>h1]:font-bold [&>h2]:text-2xl [&>h2]:font-bold [&>h3]:text-xl [&>h3]:font-bold [&>p]:text-base [&>ul]:list-disc [&>ul]:pl-6 [&>ol]:list-decimal [&>ol]:pl-6">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
@@ -280,7 +280,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       )}
 
       {section.error && (
-        <div className="text-center bg-red-300/90 text-black p-6 rounded-lg mb-8 font-heading text-lg font-medium">
+        <div className="text-center bg-red-300/90 text-black p-8 rounded-lg mb-8 font-heading text-lg font-medium shadow-lg">
           {section.error}
         </div>
       )}

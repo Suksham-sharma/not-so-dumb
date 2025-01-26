@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState, useRef } from "react";
@@ -329,7 +328,7 @@ export default function Home() {
                 {chatSections.map((section, index) => (
                   <div
                     key={index}
-                    className="border-2 border-black bg-bg/60 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-6 transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
+                    className="border-2 border-black bg-bg/60 rounded-xl  hover:shadow-none"
                   >
                     <ResultsDisplay
                       section={section}
