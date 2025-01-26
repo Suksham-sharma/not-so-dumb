@@ -45,15 +45,15 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   onViewReasoningInput,
 }) => {
   return (
-    <div className="pt-8 border-b border-gray-200 last:border-0">
+    <div className="bg-transparent">
       {/* Query */}
-      <div className="mb-8">
-        <p className="text-lg text-gray-800">{section.query}</p>
+      <div className="mb-12">
+        <h2 className="text-3xl font-bold text-black mb-2">{section.query}</h2>
       </div>
 
       {/* Loading States */}
       {isLoading && (
-        <div className="mb-6 flex items-center gap-8 text-sm text-gray-500">
+        <div className="mb-8 flex items-center gap-8 text-base font-heading text-black bg-white/80 p-6 rounded-xl">
           <LoadingIndicator text="Loading Sources" color="bg-blue-500" />
           <LoadingIndicator
             text="Reading Content"
@@ -68,22 +68,22 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         </div>
       )}
 
-      {/* Sources Loading State */}
+      {/* Search Results Loading State */}
       {section.isLoadingSources && (
-        <div className="mb-12 animate-pulse">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-5 h-5 bg-gray-200 rounded" />
-            <div className="h-4 w-20 bg-gray-200 rounded" />
+        <div className="mb-16 animate-pulse bg-white/80 p-6 rounded-xl">
+          <div className="flex items-center gap-2 mb-6">
+            <div className="w-6 h-6 bg-gray-200 rounded" />
+            <div className="h-5 w-24 bg-gray-200 rounded" />
           </div>
-          <div className="flex gap-3 overflow-x-auto pb-4">
+          <div className="flex gap-4 overflow-x-auto pb-4">
             {[1, 2, 3].map((_, idx) => (
               <div
                 key={idx}
-                className="flex-shrink-0 w-[300px] bg-gray-50 border border-gray-200 rounded-xl overflow-hidden"
+                className="flex-shrink-0 w-[320px] bg-gray-50 rounded-xl overflow-hidden shadow-lg"
               >
-                <div className="h-40 bg-gray-200 animate-pulse flex items-center justify-center">
+                <div className="h-48 bg-gray-200 animate-pulse flex items-center justify-center">
                   <svg
-                    className="w-8 h-8 text-gray-400"
+                    className="w-10 h-10 text-gray-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -96,8 +96,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                     />
                   </svg>
                 </div>
-                <div className="p-4 space-y-3">
-                  <div className="h-4 bg-gray-200 rounded w-3/4" />
+                <div className="p-6 space-y-4">
+                  <div className="h-5 bg-gray-200 rounded w-3/4" />
                   <div className="h-4 bg-gray-200 rounded w-full" />
                   <div className="h-4 bg-gray-200 rounded w-2/3" />
                 </div>
@@ -109,21 +109,23 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
       {/* Search Results */}
       {section.searchResults.length > 0 && (
-        <div className="mb-12">
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center gap-2">
-              <SourceIcon />
-              <h3 className="text-sm font-semibold text-gray-600">Sources</h3>
+        <div className="mb-16 bg-white/80 p-6 rounded-xl">
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center gap-3">
+              <SourceIcon className="w-6 h-6 text-black" />
+              <h3 className="text-xl font-bold text-black font-heading">
+                Sources
+              </h3>
             </div>
             <button
               onClick={onViewTavilyData}
-              className="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1"
+              className="text-sm text-black bg-blue-300 px-4 py-2 rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none flex items-center gap-2 font-heading"
             >
               <span>View Full Data</span>
-              <ArrowIcon className="w-4 h-4" />
+              <ArrowIcon className="w-5 h-5" />
             </button>
           </div>
-          <div className="flex gap-3 overflow-x-auto pb-4 -mx-4 px-4">
+          <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4">
             {section.searchResults.map((result, idx) => (
               <SearchResultCard key={idx} result={result} />
             ))}
@@ -133,16 +135,16 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
       {/* Thinking Process Loading State */}
       {section.isLoadingThinking && (
-        <div className="mb-12">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-5 h-5 bg-gray-200 rounded" />
-            <div className="h-4 w-32 bg-gray-200 rounded" />
+        <div className="mb-16 bg-white/80 p-6 rounded-xl">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-6 h-6 bg-gray-200 rounded" />
+            <div className="h-5 w-36 bg-gray-200 rounded" />
           </div>
-          <div className="pl-4 border-l-2 border-gray-300">
-            <div className="animate-pulse space-y-2">
-              <div className="h-4 bg-gray-200 rounded w-full" />
-              <div className="h-4 bg-gray-200 rounded w-5/6" />
-              <div className="h-4 bg-gray-200 rounded w-4/5" />
+          <div className="pl-6 border-l-2 border-black bg-gray-50/50 rounded-r-xl p-6">
+            <div className="animate-pulse space-y-3">
+              <div className="h-5 bg-gray-200 rounded w-full" />
+              <div className="h-5 bg-gray-200 rounded w-5/6" />
+              <div className="h-5 bg-gray-200 rounded w-4/5" />
             </div>
           </div>
         </div>
@@ -150,40 +152,28 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
       {/* Thinking Process */}
       {section.reasoning && (
-        <div className="mb-12">
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center gap-2">
-              <ThinkingIcon />
-              <h3 className="text-sm font-semibold text-gray-600">
-                Thinking Process:
+        <div className="mb-16 bg-white/80 p-6 rounded-xl">
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center gap-3">
+              <ThinkingIcon className="w-6 h-6 text-black" />
+              <h3 className="text-xl font-bold text-black font-heading">
+                Thinking Process
               </h3>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <button
                 onClick={onViewReasoningInput}
-                className="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1"
+                className="text-sm text-black bg-blue-300 px-4 py-2 rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none flex items-center gap-2 font-heading"
               >
                 <span>View Full Input</span>
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 7l5 5m0 0l-5 5m5-5H6"
-                  />
-                </svg>
+                <ArrowIcon className="w-5 h-5" />
               </button>
               <button
                 onClick={onToggleReasoning}
-                className="text-gray-600 hover:text-gray-700"
+                className="text-black bg-yellow-300 p-2 rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
               >
                 <svg
-                  className={`w-5 h-5 transform transition-transform ${
+                  className={`w-6 h-6 transform transition-transform ${
                     section.isReasoningCollapsed ? "-rotate-90" : "rotate-0"
                   }`}
                   fill="none"
@@ -201,7 +191,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
             </div>
           </div>
           <motion.div
-            className="pl-4 border-l-2 border-gray-300"
+            className="pl-6 border-l-2 border-black bg-gray-50/50 rounded-r-xl p-6"
             initial={false}
             animate={{
               height: section.isReasoningCollapsed ? 0 : "auto",
@@ -209,7 +199,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
             }}
             transition={{ duration: 0.3 }}
           >
-            <div className="text-sm text-gray-600 leading-relaxed overflow-hidden">
+            <div className="text-base text-black font-heading leading-relaxed overflow-hidden">
               {section.reasoning}
             </div>
           </motion.div>
@@ -218,13 +208,13 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
       {/* Final Report */}
       {section.response && (
-        <div className="mt-12 mb-16">
-          <div className="prose prose-blue max-w-none space-y-4 text-gray-800 [&>ul]:list-disc [&>ul]:pl-6 [&>ol]:list-decimal [&>ol]:pl-6">
+        <div className="mt-16 mb-20 bg-white/80 p-6 rounded-xl">
+          <div className="prose prose-blue max-w-none space-y-6 text-black font-heading [&>h1]:text-3xl [&>h1]:font-bold [&>h2]:text-2xl [&>h2]:font-bold [&>h3]:text-xl [&>h3]:font-bold [&>p]:text-base [&>ul]:list-disc [&>ul]:pl-6 [&>ol]:list-decimal [&>ol]:pl-6">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
                 table: ({ ...props }) => (
-                  <div className="my-8 overflow-x-auto rounded-lg border border-gray-200">
+                  <div className="my-8 overflow-x-auto rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                     <table
                       className="w-full text-left border-collapse"
                       {...props}
@@ -248,7 +238,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                 ),
                 th: ({ ...props }) => (
                   <th
-                    className="py-3 px-4 font-medium text-sm text-gray-900 border-b border-gray-200"
+                    className="py-4 px-6 font-bold text-sm text-black border-b border-gray-200"
                     {...props}
                   />
                 ),
@@ -256,13 +246,13 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                   const content = props.children?.toString() || "";
                   if (content.match(/\[.*?\]\(.*?\)/)) {
                     return (
-                      <td className="py-3 px-4 text-sm text-gray-500">
+                      <td className="py-4 px-6 text-base text-gray-700">
                         <ReactMarkdown
                           components={{
                             a: ({ ...linkProps }) => (
                               <a
                                 {...linkProps}
-                                className="text-blue-600 hover:text-blue-800 hover:underline"
+                                className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
                                 target="_blank"
                                 rel="noopener noreferrer"
                               />
@@ -276,7 +266,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                   }
                   return (
                     <td
-                      className="py-3 px-4 text-sm text-gray-500"
+                      className="py-4 px-6 text-base text-gray-700"
                       {...props}
                     />
                   );
@@ -290,7 +280,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       )}
 
       {section.error && (
-        <div className="text-center text-red-600 mb-8">{section.error}</div>
+        <div className="text-center bg-red-300/90 text-black p-6 rounded-lg mb-8 font-heading text-lg font-medium">
+          {section.error}
+        </div>
       )}
     </div>
   );
