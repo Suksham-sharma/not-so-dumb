@@ -4,15 +4,28 @@ import React from "react";
 import { motion } from "framer-motion";
 import QuizConfig from "@/components/QuizConfig";
 import TopBar from "@/components/TopBar";
+import { fetchTranscript } from "@/lib/youtube";
 
 export default function QuizPage() {
-  const handleQuizGeneration = (config: {
+  const handleQuizGeneration = async (config: {
     numQuestions: number;
     difficulty: string;
     topic: string;
+    sources?: {
+      youtubeLink: string;
+      article: string;
+    };
   }) => {
-    // TODO: Implement quiz generation logic
-    console.log("Generating quiz with config:", config);
+    try {
+      if (config.sources?.youtubeLink) {
+        const transcript = await fetchTranscript(config.sources.youtubeLink);
+        console.log("Transcript fetched:", transcript);
+        // TODO: Use transcript to generate quiz questions
+      }
+      console.log("Generating quiz with config:", config);
+    } catch (error) {
+      console.error("Error generating quiz:", error);
+    }
   };
 
   return (
