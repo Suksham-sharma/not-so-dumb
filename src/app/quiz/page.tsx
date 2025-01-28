@@ -4,7 +4,6 @@ import React from "react";
 import { motion } from "framer-motion";
 import QuizConfig from "@/components/QuizConfig";
 import TopBar from "@/components/TopBar";
-import AnimatedBlobs from "@/components/AnimatedBlobs";
 
 export default function QuizPage() {
   const handleQuizGeneration = (config: {

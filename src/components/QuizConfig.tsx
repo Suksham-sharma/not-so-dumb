@@ -1,11 +1,16 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { Plus, Minus } from "lucide-react";
 
 interface QuizConfigProps {
   onSubmit: (config: {
     numQuestions: number;
     difficulty: string;
     topic: string;
+    sources?: {
+      youtubeLink: string;
+      article: string;
+    };
   }) => void;
   isLoading?: boolean;
 }
@@ -14,6 +19,9 @@ const QuizConfig: React.FC<QuizConfigProps> = ({ onSubmit, isLoading }) => {
   const [numQuestions, setNumQuestions] = React.useState<number>(5);
   const [difficulty, setDifficulty] = React.useState<number>(1);
   const [topic, setTopic] = React.useState<string>("");
+  const [showSources, setShowSources] = React.useState(false);
+  const [youtubeLink, setYoutubeLink] = React.useState("");
+  const [article, setArticle] = React.useState("");
 
   const difficultyEmojis = ["😊", "🙂", "😐", "😈"];
   const difficultyLabels = ["easy", "medium-easy", "medium", "hard"];
@@ -24,11 +32,17 @@ const QuizConfig: React.FC<QuizConfigProps> = ({ onSubmit, isLoading }) => {
       numQuestions,
       difficulty: difficultyLabels[difficulty],
       topic,
+      sources: showSources
+        ? {
+            youtubeLink,
+            article,
+          }
+        : undefined,
     });
   };
 
   const getSliderBackground = (value: number, max: number) => {
-    const percentage = ((value - 5) / (max - 5)) * 100;
+    const percentage = ((value - 2) / (max - 2)) * 100;
     return `linear-gradient(to right, #4ade80 ${percentage}%, #e5e7eb ${percentage}%)`;
   };
 
@@ -76,15 +90,60 @@ const QuizConfig: React.FC<QuizConfigProps> = ({ onSubmit, isLoading }) => {
             >
               Quiz Topic
             </label>
-            <input
-              type="text"
-              id="topic"
-              value={topic}
-              onChange={(e) => setTopic(e.target.value)}
-              className="w-full px-4 py-2 border-2 border-black rounded-lg focus:outline-none bg-white"
-              placeholder="Enter the topic for your quiz"
-              required
-            />
+            <div className="relative">
+              <input
+                type="text"
+                id="topic"
+                value={topic}
+                onChange={(e) => setTopic(e.target.value)}
+                className="w-full px-4 py-2 pr-12 border-2 border-black rounded-lg focus:outline-none bg-white"
+                placeholder="Enter the topic for your quiz"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowSources(!showSources)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-lg bg-orange-300 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none transition-all duration-200"
+              >
+                {showSources ? <Minus size={16} /> : <Plus size={16} />}
+              </button>
+            </div>
+
+            {showSources && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="mt-4 space-y-4"
+              >
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-black">
+                    YouTube Links
+                  </label>
+                  <input
+                    type="url"
+                    value={youtubeLink}
+                    onChange={(e) => setYoutubeLink(e.target.value)}
+                    className="w-full px-3 py-1.5 border-2 border-black rounded-lg focus:outline-none bg-white text-sm"
+                    placeholder="Enter YouTube link"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-black">
+                    Article Links
+                  </label>
+                  <input
+                    type="url"
+                    value={article}
+                    onChange={(e) => setArticle(e.target.value)}
+                    className="w-full px-3 py-1.5 border-2 border-black rounded-lg focus:outline-none bg-white text-sm"
+                    placeholder="Enter article link"
+                  />
+                </div>
+              </motion.div>
+            )}
           </div>
 
           <div>
@@ -98,21 +157,22 @@ const QuizConfig: React.FC<QuizConfigProps> = ({ onSubmit, isLoading }) => {
               <input
                 type="range"
                 id="numQuestions"
-                min="5"
-                max="20"
-                step="5"
+                min="2"
+                max="10"
+                step="2"
                 value={numQuestions}
                 onChange={(e) => setNumQuestions(Number(e.target.value))}
                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                 style={{
-                  background: getSliderBackground(numQuestions, 20),
+                  background: getSliderBackground(numQuestions, 10),
                 }}
               />
               <div className="flex justify-between text-xs text-gray-600 px-1 mt-2">
-                <span>5</span>
+                <span>2</span>
+                <span>4</span>
+                <span>6</span>
+                <span>8</span>
                 <span>10</span>
-                <span>15</span>
-                <span>20</span>
               </div>
             </div>
           </div>
@@ -149,7 +209,7 @@ const QuizConfig: React.FC<QuizConfigProps> = ({ onSubmit, isLoading }) => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-green-400 text-black font-bold py-3 px-6 rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-orange-400 text-black font-bold py-3 px-6 rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? "Generating Quiz..." : "Generate Quiz"}
           </button>
