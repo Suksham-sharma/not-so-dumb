@@ -16,7 +16,7 @@ interface QuizConfigProps {
 }
 
 const QuizConfig: React.FC<QuizConfigProps> = ({ onSubmit, isLoading }) => {
-  const [numQuestions, setNumQuestions] = React.useState<number>(5);
+  const [numQuestions, setNumQuestions] = React.useState<number>(4);
   const [difficulty, setDifficulty] = React.useState<number>(1);
   const [topic, setTopic] = React.useState<string>("");
   const [showSources, setShowSources] = React.useState(false);
@@ -98,6 +98,7 @@ const QuizConfig: React.FC<QuizConfigProps> = ({ onSubmit, isLoading }) => {
                 onChange={(e) => setTopic(e.target.value)}
                 className="w-full px-4 py-2 pr-12 border-2 border-black rounded-lg focus:outline-none bg-white"
                 placeholder="Enter the topic for your quiz"
+                autoComplete="off"
                 required
               />
               <button
@@ -127,6 +128,7 @@ const QuizConfig: React.FC<QuizConfigProps> = ({ onSubmit, isLoading }) => {
                     onChange={(e) => setYoutubeLink(e.target.value)}
                     className="w-full px-3 py-1.5 border-2 border-black rounded-lg focus:outline-none bg-white text-sm"
                     placeholder="Enter YouTube link"
+                    autoComplete="off"
                   />
                 </div>
 
@@ -140,6 +142,7 @@ const QuizConfig: React.FC<QuizConfigProps> = ({ onSubmit, isLoading }) => {
                     onChange={(e) => setArticle(e.target.value)}
                     className="w-full px-3 py-1.5 border-2 border-black rounded-lg focus:outline-none bg-white text-sm"
                     placeholder="Enter article link"
+                    autoComplete="off"
                   />
                 </div>
               </motion.div>
