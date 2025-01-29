@@ -294,7 +294,7 @@ export default function Home() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
-                    className="inline-block px-4 py-1.5 bg-yellow-300 text-black rounded-full text-sm font-bold mb-6 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
+                    className="inline-block px-4 py-1.5 bg-yellow-300 text-black rounded-full text-sm font-bold mb-6 border-2 border-black shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
                   >
                     Powered by Web Enhanced LLM
                   </motion.div>
@@ -370,14 +370,14 @@ export default function Home() {
 
       {showTavilyModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg border-2 border-black p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          <div className="bg-white rounded-lg border-2 border-black p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-neo">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-heading  text-black">
                 Full Tavily Response
               </h3>
               <button
                 onClick={() => setShowTavilyModal(false)}
-                className="text-black hover:text-gray-700 border-2 border-black rounded-lg p-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
+                className="text-black hover:text-gray-700 border-2 border-black rounded-lg p-2 shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
               >
                 <svg
                   className="w-6 h-6"
@@ -403,14 +403,14 @@ export default function Home() {
 
       {showReasoningModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg border-2 border-black p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          <div className="bg-white rounded-lg border-2 border-black p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-neo">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-heading  text-black">
                 Full Reasoning Input
               </h3>
               <button
                 onClick={() => setShowReasoningModal(false)}
-                className="text-black hover:text-gray-700 border-2 border-black rounded-lg p-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
+                className="text-black hover:text-gray-700 border-2 border-black rounded-lg p-2 shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
               >
                 <svg
                   className="w-6 h-6"
