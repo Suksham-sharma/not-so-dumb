@@ -156,7 +156,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-3">
               <ThinkingIcon className="w-6 h-6 text-black" />
-              <h3 className="text-xl font-bold text-black font-heading">
+              <h3 className="text-xl  text-black font-heading">
                 Thinking Process
               </h3>
             </div>
