@@ -20,26 +20,26 @@ const FolderIcon: React.FC<{ className: string }> = ({
     />
     <path d="M10 10H78V78H10V10Z" fill="white" />
     <path
-      fill-rule="evenodd"
+      fillRule="evenodd"
       clipRule="evenodd"
       d="M8 10C8 8.89543 8.89543 8 10 8H78C79.1046 8 80 8.89543 80 10V78C80 79.1046 79.1046 80 78 80H10C8.89543 80 8 79.1046 8 78V10ZM12 12V76H76V12H12Z"
       fill="black"
     />
     <path d="M64 59V35H44L40 29H24V59H64Z" fill="black" />
     <path
-      fill-rule="evenodd"
+      fillRule="evenodd"
       clipRule="evenodd"
       d="M20 25H42.1407L46.1407 31H68V63H20V25ZM28 33V55H60V39H41.8593L37.8593 33H28Z"
       fill="black"
     />
     <path
-      fill-rule="evenodd"
+      fillRule="evenodd"
       clipRule="evenodd"
       d="M62 41H26V37H62V41Z"
       fill="cyan"
     />
     <path
-      fill-rule="evenodd"
+      fillRule="evenodd"
       clipRule="evenodd"
       d="M46 49H26V45H46V49Z"
       fill="cyan"

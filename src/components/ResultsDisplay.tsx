@@ -1,11 +1,11 @@
 import React from "react";
-import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ChatSection } from "../types";
 import SourceIcon from "./icons/SourceIcon";
 import ThinkingIcon from "./icons/ThinkingIcon";
 import ArrowIcon from "./icons/ArrowIcon";
+import { FadeIn } from "./ui/motion";
 
 interface LoadingIndicatorProps {
   text: string;
@@ -18,15 +18,10 @@ const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
   color,
   delay = 0,
 }) => (
-  <motion.div
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ delay }}
-    className="flex items-center gap-2"
-  >
+  <FadeIn delay={delay} className="flex items-center gap-2">
     <div className={`w-2 h-2 ${color} rounded-full animate-pulse`} />
     <span>{text}</span>
-  </motion.div>
+  </FadeIn>
 );
 
 interface ResultsDisplayProps {
@@ -47,9 +42,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   return (
     <div className="bg-transparent mx-4">
       {/* Query */}
-      <div className="my-8 ">
+      <FadeIn className="my-8">
         <h2 className="text-4xl font-bold text-black mb-4">{section.query}</h2>
-      </div>
+      </FadeIn>
 
       {/* Loading States */}
       {isLoading && (
@@ -156,7 +151,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-3">
               <ThinkingIcon className="w-6 h-6 text-black" />
-              <h3 className="text-xl  text-black font-heading">
+              <h3 className="text-xl text-black font-heading">
                 Thinking Process
               </h3>
             </div>
@@ -190,19 +185,11 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
               </button>
             </div>
           </div>
-          <motion.div
-            className="pl-6 border-l-2 border-black bg-gray-50/50 rounded-r-xl p-6"
-            initial={false}
-            animate={{
-              height: section.isReasoningCollapsed ? 0 : "auto",
-              opacity: section.isReasoningCollapsed ? 0 : 1,
-            }}
-            transition={{ duration: 0.3 }}
-          >
+          <FadeIn className="pl-6 border-l-2 border-black bg-gray-50/50 rounded-r-xl p-6">
             <div className="text-base text-black font-heading leading-relaxed overflow-hidden">
               {section.reasoning}
             </div>
-          </motion.div>
+          </FadeIn>
         </div>
       )}
 

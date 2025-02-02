@@ -67,7 +67,7 @@ const QuizConfig: React.FC<QuizConfigProps> = ({ onSubmit, isLoading }) => {
 
   return (
     <div className="min-h-screen relative overflow-hidden p-8">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-xl mx-auto">
         <div className="text-center mb-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
