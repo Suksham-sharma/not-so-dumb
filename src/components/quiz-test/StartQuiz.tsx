@@ -8,12 +8,11 @@ interface StartQuizProps {
 
 const StartQuiz: React.FC<StartQuizProps> = ({ onStart, topic }) => {
   return (
-    <div className="min-h-screen relative overflow-hidden p-4 md:p-8 bg-white">
+    <div className="min-h-screen relative overflow-hidden p-4 md:p-8">
       {/* Decorative Elements */}
       <div className="absolute inset-0 bg-[linear-gradient(45deg,#80808012_1px,transparent_1px),linear-gradient(-45deg,#80808012_1px,transparent_1px)] bg-[size:20px_20px]" />
       <div className="absolute top-0 left-0 w-32 h-32 bg-yellow-300 border-2 border-black transform -rotate-12 -translate-x-8 -translate-y-8" />
       <div className="absolute bottom-0 right-0 w-40 h-40 bg-blue-300 border-2 border-black transform rotate-12 translate-x-8 translate-y-8" />
-      <div className="absolute top-1/2 right-0 w-24 h-24 bg-green-300 border-2 border-black transform -rotate-6 translate-x-4" />
       <div className="absolute bottom-1/4 left-0 w-20 h-20 bg-orange-300 border-2 border-black transform rotate-6 -translate-x-4" />
 
       <div className="relative max-w-7xl mx-auto grid md:grid-cols-2 gap-8 items-center h-full">

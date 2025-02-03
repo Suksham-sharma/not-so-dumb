@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import TopBar from "@/components/TopBar";
 import { QuizConfig } from "@/components/quiz-config";
 
 export default function QuizPage() {

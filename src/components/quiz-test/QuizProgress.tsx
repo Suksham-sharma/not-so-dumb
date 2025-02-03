@@ -28,35 +28,50 @@ const QuizProgress: React.FC<QuizProgressProps> = ({
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-orange-50/90 p-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sticky top-8 h-full"
+      className="bg-orange-50/90 p-6 rounded-xl border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sticky top-8 h-full relative"
     >
-      <h2 className="text-xl font-bold mb-4 text-gray-800">Quiz Progress</h2>
-      <div className="space-y-3">
-        <div className="grid grid-cols-2 gap-2">
-          <div className="bg-white p-2 rounded-lg border-2 border-black">
-            <p className="text-xs font-medium text-gray-600">Total</p>
-            <p className="text-lg font-bold text-gray-800">{totalQuestions}</p>
+      {/* Add decorative elements */}
+      <div className="absolute -top-3 -left-3 w-6 h-6 bg-yellow-300 border-2 border-black transform rotate-12" />
+      <div className="absolute -bottom-3 -right-3 w-5 h-5 bg-blue-400 border-2 border-black transform -rotate-12" />
+
+      <h2 className="text-xl font-bold mb-4 relative z-10">
+        <span className="relative inline-block">
+          Quiz Progress
+          <div className="absolute bottom-0 left-0 w-full h-2 bg-orange-300 -z-10 transform -rotate-1" />
+        </span>
+      </h2>
+
+      <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-white p-3 rounded-lg border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transform hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
+            <p className="text-xs font-medium text-gray-600 mb-0.5">
+              Total Questions
+            </p>
+            <p className="text-xl font-bold text-gray-800">{totalQuestions}</p>
           </div>
-          <div className="bg-white p-2 rounded-lg border-2 border-black">
-            <p className="text-xs font-medium text-gray-600">Answered</p>
-            <p className="text-lg font-bold text-gray-800">
+          <div className="bg-white p-3 rounded-lg border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transform hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
+            <p className="text-xs font-medium text-gray-600 mb-0.5">Answered</p>
+            <p className="text-xl font-bold text-gray-800">
               {answeredQuestions}
             </p>
           </div>
         </div>
 
-        <div className="pt-1">
-          <div className="h-2 bg-gray-100 rounded-full overflow-hidden border-2 border-black">
+        <div className="bg-white p-3 rounded-lg border-2 border-black">
+          <div className="flex justify-between mb-1.5">
+            <span className="text-xs font-medium text-gray-600">Progress</span>
+            <span className="text-xs font-bold text-gray-800">
+              {progressPercentage}%
+            </span>
+          </div>
+          <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden border-2 border-black">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${progressPercentage}%` }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.8 }}
               className="h-full bg-green-400 rounded-full"
             />
           </div>
-          <p className="text-xs font-medium mt-1 text-center text-gray-600">
-            {progressPercentage}% Complete
-          </p>
         </div>
 
         <div className="grid grid-cols-5 gap-1.5">
@@ -66,7 +81,7 @@ const QuizProgress: React.FC<QuizProgressProps> = ({
               onClick={() => onQuestionClick(index)}
               className={`
                 w-full aspect-square rounded-lg border-2 border-black flex items-center justify-center font-bold text-sm
-                transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] duration-200 hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]
+                transition-all shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] duration-200 hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]
                 ${
                   currentQuestion === index
                     ? "!bg-blue-500 border-blue-700 shadow-blue-700 text-white"
@@ -91,14 +106,14 @@ const QuizProgress: React.FC<QuizProgressProps> = ({
           ))}
         </div>
 
-        <div className="grid grid-cols-2 gap-2 text-xs">
+        <div className="grid grid-cols-2 gap-3 bg-white p-2.5 rounded-lg border-2 border-black">
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded border-2 border-black bg-orange-200" />
-            <span className="text-gray-600">Visited</span>
+            <span className="text-xs font-medium text-gray-600">Visited</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded border-2 border-black bg-green-400" />
-            <span className="text-gray-600">Answered</span>
+            <span className="text-xs font-medium text-gray-600">Answered</span>
           </div>
         </div>
       </div>
