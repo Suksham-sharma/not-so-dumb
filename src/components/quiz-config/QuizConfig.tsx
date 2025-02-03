@@ -97,7 +97,9 @@ const QuizConfig: React.FC<QuizConfigProps> = ({ onSubmit, isLoading }) => {
 
         <motion.form
           onSubmit={handleSubmit}
-          className="space-y-6 bg-orange-100/80 p-4 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+          className={`space-y-6 bg-orange-100/80 p-4 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-300 ${
+            isLoading ? "opacity-75 pointer-events-none" : ""
+          }`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
@@ -143,9 +145,30 @@ const QuizConfig: React.FC<QuizConfigProps> = ({ onSubmit, isLoading }) => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-orange-400 text-black font-bold py-3 px-6 rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-orange-400 text-black font-bold py-3 px-6 rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none disabled:opacity-90 disabled:cursor-not-allowed relative overflow-hidden"
           >
-            {isLoading ? "Generating Quiz..." : "Generate Quiz"}
+            {isLoading ? (
+              <div className="relative flex items-center justify-center min-h-[24px]">
+                <span className="opacity-0">Generate Quiz</span>
+                <div className="absolute inset-0 flex items-center justify-center gap-2">
+                  {/* Main loading animation */}
+                  <div className="relative">
+                    <div className="w-6 h-6 bg-white border-4 border-black rounded-lg animate-spin-slow transform rotate-3">
+                      <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(251,146,60,0.9)_50%,transparent_75%)]" />
+                    </div>
+                    {/* Decorative elements */}
+                    <div className="absolute -top-1 -left-1 w-3 h-3 bg-yellow-300 border-2 border-black rounded-sm animate-bounce-gentle" />
+                    <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-blue-300 border-2 border-black rounded-sm animate-bounce-gentle delay-150" />
+                  </div>
+                  {/* Loading text */}
+                  <span className="font-bold animate-pulse">
+                    Preparing Quiz...
+                  </span>
+                </div>
+              </div>
+            ) : (
+              "Generate Quiz"
+            )}
           </button>
         </motion.form>
       </div>
