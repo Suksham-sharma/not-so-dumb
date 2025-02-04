@@ -4,13 +4,6 @@ import { toast } from "sonner";
 import { extractArticleContent } from "@/services/article";
 import { fetchTranscript } from "@/services/youtube";
 
-interface QuizQuestion {
-  question: string;
-  options: string[];
-  correctAnswer: string;
-  explanation: string;
-}
-
 interface QuizConfig {
   numQuestions: number;
   difficulty: string;
@@ -24,7 +17,6 @@ interface QuizConfig {
 export const useQuizGeneration = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [isContentLoading, setIsContentLoading] = useState(false);
 
   const MAX_CONTENT_LENGTH = 4000;
@@ -78,9 +70,8 @@ export const useQuizGeneration = () => {
 
       console.log("Response of quiz generation ", response);
 
-      setQuestions(response.data.questions);
       toast.success("Quiz generated successfully!");
-      return response.data.questions;
+      return response.data;
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to generate quiz";
@@ -96,6 +87,5 @@ export const useQuizGeneration = () => {
     generateQuiz,
     isLoading,
     error,
-    questions,
   };
 };

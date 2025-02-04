@@ -2,10 +2,13 @@
 import React from "react";
 import { QuizConfig } from "@/components/quiz-config";
 import { useQuizGeneration } from "@/hooks/useQuizGeneration";
+import { useQuizStore } from "@/store/quiz";
+import { useRouter } from "next/navigation";
 
 export default function QuizPage() {
-  const [quizQuestions, setQuizQuestions] = React.useState(null);
+  const router = useRouter();
   const { generateQuiz, isLoading, error } = useQuizGeneration();
+  const { setQuestions, setHeading } = useQuizStore();
 
   const handleQuizGeneration = async (config: {
     numQuestions: number;
@@ -16,15 +19,12 @@ export default function QuizPage() {
       articleLink?: string;
     };
   }) => {
-    const questions = await generateQuiz(config);
-    console.log("Questions", questions);
+    const { questions, heading } = await generateQuiz(config);
     if (questions.length > 0) {
-      setQuizQuestions(questions);
+      setQuestions(questions);
+      setHeading(heading);
+      router.push("/quiz/test");
     }
-  };
-
-  const handleQuizSubmit = (answers: Record<number, string>) => {
-    console.log("Quiz submitted with answers:", answers);
   };
 
   return (

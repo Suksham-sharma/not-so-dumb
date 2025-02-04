@@ -35,13 +35,19 @@ ${
 }
 ${sources?.articleLink ? `Consider this article content: ${sourceContent}` : ""}
 
-Format each question as a JSON object with the following structure:
+Format the response as a JSON object with the following structure:
 {
-  "question": "The question text",
-  "options": ["A) First option", "B) Second option", "C) Third option", "D) Fourth option"],
-  "correctAnswer": "A",
-  "explanation": "Detailed explanation of the correct answer"
+  "heading": "A concise 1-2 word quiz title based on the topic and difficulty",
+  "questions": [
+    {
+      "id": "A unique number for each question",
+      "question": "The question text",
+      "options": ["A) First option", "B) Second option", "C) Third option", "D) Fourth option"],
+      "correctAnswer": "A",
+      "explanation": "Detailed explanation of the correct answer"
+    }
+  ]
 }
 
-Provide the response as an array of ${numQuestions} question objects.`;
+Ensure the heading is engaging and reflective of the quiz content. The questions array should contain ${numQuestions} question objects.`;
 }

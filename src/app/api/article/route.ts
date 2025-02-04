@@ -12,7 +12,6 @@ export async function POST(req: Request) {
 
     const response = await axios.get(url);
     const html = response.data;
-    console.log(html);
 
     const $ = cheerio.load(html);
 

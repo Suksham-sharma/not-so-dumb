@@ -6,12 +6,15 @@ import YellowButton from "../ui/yellow-button";
 import { toast } from "sonner";
 import StartQuiz from "./StartQuiz";
 import QuizResults from "./QuizResults";
+import QuizReview from "./QuizReview";
+import { useQuizStore } from "@/store/quiz";
 
 interface Question {
   id: number;
   question: string;
   options: string[];
-  correctAnswer?: string;
+  correctAnswer: string;
+  explanation: string;
 }
 
 interface TestScreenProps {
@@ -20,50 +23,63 @@ interface TestScreenProps {
 }
 
 const TestScreen: React.FC<TestScreenProps> = ({ questions, onSubmit }) => {
-  const [selectedAnswers, setSelectedAnswers] = React.useState<
-    Record<number, string>
-  >({});
-  const [currentQuestion, setCurrentQuestion] = React.useState<number>(0);
-  const [visitedQuestions, setVisitedQuestions] = React.useState<number[]>([0]);
-  const [isStarted, setIsStarted] = React.useState(false);
-  const [isFinished, setIsFinished] = React.useState(false);
-  const [timeTaken, setTimeTaken] = React.useState(0);
-  const [score, setScore] = React.useState(0);
+  const [showReview, setShowReview] = React.useState(false);
+  const {
+    answers: selectedAnswers,
+    setAnswer,
+    currentQuestion,
+    setCurrentQuestion,
+    visitedQuestions,
+    addVisitedQuestion,
+    isStarted,
+    setIsStarted,
+    isFinished,
+    setIsFinished,
+    timeTaken,
+    setTimeTaken,
+    score,
+    setScore,
+    reset,
+  } = useQuizStore();
 
   React.useEffect(() => {
     let timer: NodeJS.Timeout;
     if (isStarted && !isFinished) {
       timer = setInterval(() => {
-        setTimeTaken((prev) => prev + 1);
+        setTimeTaken(timeTaken + 1);
       }, 1000);
     }
     return () => clearInterval(timer);
-  }, [isStarted, isFinished]);
+  }, [isStarted, isFinished, timeTaken, setTimeTaken]);
 
   const handleOptionSelect = (questionId: number, option: string) => {
-    setSelectedAnswers((prev) => ({
-      ...prev,
-      [questionId]: option,
-    }));
+    console.log("handleOptionSelect", questionId, option);
+    setAnswer(questionId, option);
     const questionIndex = questions.findIndex((q) => q.id === questionId);
     if (!visitedQuestions.includes(questionIndex)) {
-      setVisitedQuestions((prev) => [...prev, questionIndex]);
+      addVisitedQuestion(questionIndex);
     }
+    console.log("selectedAnswers", selectedAnswers);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const correctAnswers = questions.reduce((count, question) => {
+      if (!question.correctAnswer || !selectedAnswers[question.id])
+        return count;
       return selectedAnswers[question.id] === question.correctAnswer
         ? count + 1
         : count;
     }, 0);
     setScore(correctAnswers);
     setIsFinished(true);
-    toast.success("Quiz submitted successfully!", {
-      position: "top-right",
-      duration: 2000,
-    });
+    toast.success(
+      `Quiz submitted successfully! Score: ${correctAnswers}/${questions.length}`,
+      {
+        position: "top-right",
+        duration: 2000,
+      }
+    );
     onSubmit(selectedAnswers);
   };
 
@@ -72,7 +88,7 @@ const TestScreen: React.FC<TestScreenProps> = ({ questions, onSubmit }) => {
       const nextQuestion = currentQuestion + 1;
       setCurrentQuestion(nextQuestion);
       if (!visitedQuestions.includes(nextQuestion)) {
-        setVisitedQuestions((prev) => [...prev, nextQuestion]);
+        addVisitedQuestion(nextQuestion);
       }
     }
   };
@@ -82,7 +98,7 @@ const TestScreen: React.FC<TestScreenProps> = ({ questions, onSubmit }) => {
       const prevQuestion = currentQuestion - 1;
       setCurrentQuestion(prevQuestion);
       if (!visitedQuestions.includes(prevQuestion)) {
-        setVisitedQuestions((prev) => [...prev, prevQuestion]);
+        addVisitedQuestion(prevQuestion);
       }
     }
   };
@@ -90,7 +106,7 @@ const TestScreen: React.FC<TestScreenProps> = ({ questions, onSubmit }) => {
   const handleQuestionClick = (index: number) => {
     setCurrentQuestion(index);
     if (!visitedQuestions.includes(index)) {
-      setVisitedQuestions((prev) => [...prev, index]);
+      addVisitedQuestion(index);
     }
   };
 
@@ -103,13 +119,7 @@ const TestScreen: React.FC<TestScreenProps> = ({ questions, onSubmit }) => {
   };
 
   const handleRetry = () => {
-    setSelectedAnswers({});
-    setCurrentQuestion(0);
-    setVisitedQuestions([0]);
-    setIsStarted(false);
-    setIsFinished(false);
-    setTimeTaken(0);
-    setScore(0);
+    reset();
   };
 
   if (!isStarted) {
@@ -117,6 +127,15 @@ const TestScreen: React.FC<TestScreenProps> = ({ questions, onSubmit }) => {
   }
 
   if (isFinished) {
+    if (showReview) {
+      return (
+        <QuizReview
+          questions={questions}
+          userAnswers={selectedAnswers}
+          onBack={() => setShowReview(false)}
+        />
+      );
+    }
     return (
       <QuizResults
         score={score}
@@ -125,6 +144,7 @@ const TestScreen: React.FC<TestScreenProps> = ({ questions, onSubmit }) => {
         correctAnswers={score}
         visitedQuestions={visitedQuestions}
         onRetry={handleRetry}
+        onReview={() => setShowReview(true)}
       />
     );
   }

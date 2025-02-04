@@ -10,6 +10,7 @@ interface QuizResultsProps {
   correctAnswers: number;
   visitedQuestions: number[];
   onRetry?: () => void;
+  onReview?: () => void;
 }
 
 const QuizResults: React.FC<QuizResultsProps> = ({
@@ -19,6 +20,7 @@ const QuizResults: React.FC<QuizResultsProps> = ({
   correctAnswers,
   visitedQuestions,
   onRetry,
+  onReview,
 }) => {
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -175,6 +177,15 @@ const QuizResults: React.FC<QuizResultsProps> = ({
                 >
                   <div className="absolute inset-0 bg-orange-300 transform translate-y-full group-hover:translate-y-0 transition-transform" />
                   <span className="relative z-10">Try Again</span>
+                </button>
+              )}
+              {onReview && (
+                <button
+                  onClick={onReview}
+                  className="flex-1 bg-yellow-400 text-black font-bold py-3 px-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transform hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all text-lg relative overflow-hidden group"
+                >
+                  <div className="absolute inset-0 bg-yellow-300 transform translate-y-full group-hover:translate-y-0 transition-transform" />
+                  <span className="relative z-10">Review Quiz</span>
                 </button>
               )}
               <button

@@ -9,21 +9,17 @@ const openai = new OpenAI({
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    console.log("Req body is", body);
 
     const validationResult = quizValidationSchema.safeParse(body);
-    console.log(validationResult.error);
     if (!validationResult.success) {
       return NextResponse.json(
         { error: "Invalid input", details: validationResult.error.issues },
         { status: 400 }
       );
     }
-    console.log("here;l/xc");
 
     const { numQuestions } = validationResult.data;
     const prompt = generateQuizPrompt(validationResult.data);
-    console.log(prompt);
 
     const completion = await openai.chat.completions.create({
       messages: [
@@ -49,7 +45,6 @@ export async function POST(req: Request) {
     }
 
     const response = JSON.parse(completion.choices[0].message.content);
-    console.log(response);
 
     if (
       !response.questions ||
@@ -66,6 +61,14 @@ export async function POST(req: Request) {
         { status: 500 }
       );
     }
+
+    // Ensure each question has an ID
+    response.questions = response.questions.map(
+      (question: any[], index: number) => ({
+        ...question,
+        id: index + 1,
+      })
+    );
 
     return NextResponse.json(response);
   } catch (error) {
