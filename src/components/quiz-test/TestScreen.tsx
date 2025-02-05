@@ -8,6 +8,7 @@ import StartQuiz from "./StartQuiz";
 import QuizResults from "./QuizResults";
 import QuizReview from "./QuizReview";
 import { useQuizStore } from "@/store/quiz";
+import Timer from "./Timer";
 
 interface Question {
   id: number;
@@ -41,16 +42,6 @@ const TestScreen: React.FC<TestScreenProps> = ({ questions, onSubmit }) => {
     setScore,
     reset,
   } = useQuizStore();
-
-  React.useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (isStarted && !isFinished) {
-      timer = setInterval(() => {
-        setTimeTaken(timeTaken + 1);
-      }, 1000);
-    }
-    return () => clearInterval(timer);
-  }, [isStarted, isFinished, timeTaken, setTimeTaken]);
 
   const handleOptionSelect = (questionId: number, option: string) => {
     console.log("handleOptionSelect", questionId, option);
@@ -153,8 +144,11 @@ const TestScreen: React.FC<TestScreenProps> = ({ questions, onSubmit }) => {
     <div className="min-h-screen relative overflow-hidden p-4 md:p-8 ">
       <div className="absolute inset-0 bg-white/50" />
       <div className="relative max-w-7xl mx-auto mb-8">
-        <FadeIn>
-          <YellowButton className="relative text-lg">🎯 Quiz Time</YellowButton>
+        <FadeIn className="flex justify-between w-full items-center">
+          <YellowButton className="relative text-lg max-h-10">
+            🎯 Quiz Time
+          </YellowButton>
+          <Timer />
         </FadeIn>
       </div>
 
