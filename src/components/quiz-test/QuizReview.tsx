@@ -1,8 +1,8 @@
 import React from "react";
 import { FadeIn } from "../ui/motion";
 import YellowButton from "../ui/yellow-button";
-import { toast } from "sonner";
 import { Share2 } from "lucide-react";
+import { useQuizSharing } from "@/hooks/useQuizSharing";
 
 interface Question {
   id: number;
@@ -25,22 +25,10 @@ const QuizReview: React.FC<QuizReviewProps> = ({
   onBack,
   quizId,
 }) => {
-  const handleShare = async () => {
-    if (!quizId) return;
-    const shareUrl = `${window.location.origin}/quiz/${quizId}`;
-    try {
-      await navigator.clipboard.writeText(shareUrl);
-      toast.success("Quiz link copied to clipboard!", {
-        position: "top-right",
-        duration: 2000,
-      });
-    } catch (err) {
-      toast.error("Failed to copy link", {
-        position: "top-right",
-        duration: 2000,
-      });
-    }
-  };
+  const { handleShare, isSharing } = useQuizSharing({
+    quizId,
+    quiz: questions,
+  });
   return (
     <div className="min-h-screen relative overflow-hidden p-4 md:p-8">
       {/* Decorative Elements */}
@@ -56,15 +44,13 @@ const QuizReview: React.FC<QuizReviewProps> = ({
             <YellowButton className="relative text-lg">
               📝 Quiz Review
             </YellowButton>
-            {quizId && (
-              <button
-                onClick={handleShare}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-400 text-black rounded-full text-sm font-bold border-2 border-black shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
-              >
-                <Share2 size={16} />
-                Share Quiz
-              </button>
-            )}
+            <button
+              onClick={handleShare}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-400 text-black rounded-full text-sm font-bold border-2 border-black shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
+            >
+              <Share2 size={16} />
+              Share Quiz
+            </button>
           </div>
         </FadeIn>
 

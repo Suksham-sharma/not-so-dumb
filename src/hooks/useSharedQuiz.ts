@@ -2,19 +2,11 @@ import { useState, useEffect } from "react";
 import { useQuizStore } from "@/store/quiz";
 import axios from "axios";
 
-interface QuizData {
-  id: string;
-  heading: string;
-  topic: string;
-  difficulty: string;
-  questions: {
-    id: number;
-    question: string;
-    options: string[];
-    correctAnswer: string;
-    explanation: string;
-  }[];
-}
+import { Quiz } from "@/types/quiz";
+
+type QuizData = Required<
+  Pick<Quiz, "id" | "heading" | "topic" | "difficulty" | "questions">
+>;
 
 export const useSharedQuiz = (quizId: string) => {
   const [isLoading, setIsLoading] = useState(true);

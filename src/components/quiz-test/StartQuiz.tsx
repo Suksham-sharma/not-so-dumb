@@ -1,31 +1,26 @@
 import React from "react";
 import YellowButton from "../ui/yellow-button";
-import { toast } from "sonner";
 import { Share2 } from "lucide-react";
+import { useQuizSharing } from "@/hooks/useQuizSharing";
+import { Question, Quiz } from "@/types/quiz";
 
 interface StartQuizProps {
   onStart: () => void;
   topic: string;
   quizId?: string;
+  questions: Question[];
 }
 
-const StartQuiz: React.FC<StartQuizProps> = ({ onStart, topic, quizId }) => {
-  const handleShare = async () => {
-    if (!quizId) return;
-    const shareUrl = `${window.location.origin}/quiz/${quizId}`;
-    try {
-      await navigator.clipboard.writeText(shareUrl);
-      toast.success("Quiz link copied to clipboard!", {
-        position: "top-right",
-        duration: 2000,
-      });
-    } catch (err) {
-      toast.error("Failed to copy link", {
-        position: "top-right",
-        duration: 2000,
-      });
-    }
-  };
+const StartQuiz: React.FC<StartQuizProps> = ({
+  onStart,
+  topic,
+  quizId,
+  questions,
+}) => {
+  const { handleShare, isSharing } = useQuizSharing({
+    quizId,
+    quiz: questions,
+  });
   return (
     <div className="min-h-screen relative overflow-hidden p-4 md:p-8">
       {/* Decorative Elements */}
@@ -41,15 +36,14 @@ const StartQuiz: React.FC<StartQuizProps> = ({ onStart, topic, quizId }) => {
             <YellowButton className="relative text-lg">
               🎯 Ready to Begin?
             </YellowButton>
-            {quizId && (
-              <button
-                onClick={handleShare}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-400 text-black rounded-full text-sm font-bold border-2 border-black shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
-              >
-                <Share2 size={16} />
-                Share Quiz
-              </button>
-            )}
+
+            <button
+              onClick={handleShare}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-400 text-black rounded-full text-sm font-bold border-2 border-black shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
+            >
+              <Share2 size={16} />
+              Share Quiz
+            </button>
           </div>
 
           <div className="relative bg-white/90 p-8 rounded-xl border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transform hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all">

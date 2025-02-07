@@ -63,7 +63,7 @@ export const useQuizGeneration = () => {
         sourceContent = await fetchSourceContent(config);
       }
 
-      const response = await axios.post("/api/quiz", {
+      const response = await axios.post("/api/generate-quiz", {
         ...config,
         sourceContent,
       });

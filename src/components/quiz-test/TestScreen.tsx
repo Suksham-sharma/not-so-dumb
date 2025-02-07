@@ -125,6 +125,7 @@ const TestScreen: React.FC<TestScreenProps> = ({
         onStart={() => setIsStarted(true)}
         topic={heading}
         quizId={quizId}
+        questions={questions}
       />
     );
   }
