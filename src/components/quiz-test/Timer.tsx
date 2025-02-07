@@ -1,8 +1,10 @@
 import React from "react";
 import { useQuizStore } from "@/store/quiz";
 
-const Timer = () => {
-  const { isFinished, setTimeTaken } = useQuizStore();
+const useTimer = (
+  isFinished: boolean,
+  setTimeTaken: (time: number) => void
+) => {
   const [time, setTime] = React.useState(0);
 
   React.useEffect(() => {
@@ -18,11 +20,18 @@ const Timer = () => {
     return () => clearInterval(timer);
   }, [isFinished, time, setTimeTaken]);
 
-  const formatTime = (seconds: number): string => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
-  };
+  return time;
+};
+
+const formatTime = (seconds: number): string => {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+};
+
+const Timer = () => {
+  const { isFinished, setTimeTaken } = useQuizStore();
+  const time = useTimer(isFinished, setTimeTaken);
 
   return (
     <div className="relative inline-block">
@@ -38,4 +47,5 @@ const Timer = () => {
   );
 };
 
+export { formatTime };
 export default Timer;

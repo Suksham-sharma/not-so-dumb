@@ -21,59 +21,15 @@ interface Question {
 interface TestScreenProps {
   questions: Question[];
   onSubmit: (answers: Record<number, string>) => void;
+  quizId?: string;
 }
 
-const TestScreen: React.FC<TestScreenProps> = ({ questions, onSubmit }) => {
-  const [showReview, setShowReview] = React.useState(false);
-  const {
-    answers: selectedAnswers,
-    setAnswer,
-    currentQuestion,
-    setCurrentQuestion,
-    visitedQuestions,
-    addVisitedQuestion,
-    isStarted,
-    setIsStarted,
-    isFinished,
-    setIsFinished,
-    timeTaken,
-    setTimeTaken,
-    score,
-    setScore,
-    reset,
-    heading,
-  } = useQuizStore();
-
-  const handleOptionSelect = (questionId: number, option: string) => {
-    console.log("handleOptionSelect", questionId, option);
-    setAnswer(questionId, option);
-    const questionIndex = questions.findIndex((q) => q.id === questionId);
-    if (!visitedQuestions.includes(questionIndex)) {
-      addVisitedQuestion(questionIndex);
-    }
-    console.log("selectedAnswers", selectedAnswers);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const correctAnswers = questions.reduce((count, question) => {
-      if (!question.correctAnswer || !selectedAnswers[question.id])
-        return count;
-      return selectedAnswers[question.id] === question.correctAnswer
-        ? count + 1
-        : count;
-    }, 0);
-    setScore(correctAnswers);
-    setIsFinished(true);
-    toast.success(
-      `Quiz submitted successfully! Score: ${correctAnswers}/${questions.length}`,
-      {
-        position: "top-right",
-        duration: 2000,
-      }
-    );
-    onSubmit(selectedAnswers);
-  };
+const useQuizNavigation = (
+  questions: Question[],
+  visitedQuestions: number[],
+  addVisitedQuestion: (index: number) => void
+) => {
+  const { currentQuestion, setCurrentQuestion } = useQuizStore();
 
   const handleNext = () => {
     if (currentQuestion < questions.length - 1) {
@@ -102,20 +58,75 @@ const TestScreen: React.FC<TestScreenProps> = ({ questions, onSubmit }) => {
     }
   };
 
-  const totalQuestions = questions.length;
-  const answeredQuestions = Object.keys(selectedAnswers).length;
-  const currentQuestionData = questions[currentQuestion];
+  return { handleNext, handlePrevious, handleQuestionClick };
+};
 
-  const handleStart = () => {
-    setIsStarted(true);
+const TestScreen: React.FC<TestScreenProps> = ({
+  questions,
+  onSubmit,
+  quizId,
+}) => {
+  const [showReview, setShowReview] = React.useState(false);
+  const {
+    answers: selectedAnswers,
+    setAnswer,
+    currentQuestion,
+    visitedQuestions,
+    addVisitedQuestion,
+    isStarted,
+    setIsStarted,
+    isFinished,
+    setIsFinished,
+    timeTaken,
+    score,
+    setScore,
+    reset,
+    heading,
+  } = useQuizStore();
+
+  const { handleNext, handlePrevious, handleQuestionClick } = useQuizNavigation(
+    questions,
+    visitedQuestions,
+    addVisitedQuestion
+  );
+
+  const handleOptionSelect = (questionId: number, option: string) => {
+    setAnswer(questionId, option);
+    const questionIndex = questions.findIndex((q) => q.id === questionId);
+    if (!visitedQuestions.includes(questionIndex)) {
+      addVisitedQuestion(questionIndex);
+    }
   };
 
-  const handleRetry = () => {
-    reset();
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const correctAnswers = questions.reduce((count, question) => {
+      if (!question.correctAnswer || !selectedAnswers[question.id])
+        return count;
+      return selectedAnswers[question.id] === question.correctAnswer
+        ? count + 1
+        : count;
+    }, 0);
+    setScore(correctAnswers);
+    setIsFinished(true);
+    toast.success(
+      `Quiz submitted successfully! Score: ${correctAnswers}/${questions.length}`,
+      {
+        position: "top-right",
+        duration: 2000,
+      }
+    );
+    onSubmit(selectedAnswers);
   };
 
   if (!isStarted) {
-    return <StartQuiz onStart={handleStart} topic={heading} />;
+    return (
+      <StartQuiz
+        onStart={() => setIsStarted(true)}
+        topic={heading}
+        quizId={quizId}
+      />
+    );
   }
 
   if (isFinished) {
@@ -125,6 +136,7 @@ const TestScreen: React.FC<TestScreenProps> = ({ questions, onSubmit }) => {
           questions={questions}
           userAnswers={selectedAnswers}
           onBack={() => setShowReview(false)}
+          quizId={quizId}
         />
       );
     }
@@ -135,11 +147,15 @@ const TestScreen: React.FC<TestScreenProps> = ({ questions, onSubmit }) => {
         timeTaken={timeTaken}
         correctAnswers={score}
         visitedQuestions={visitedQuestions}
-        onRetry={handleRetry}
+        onRetry={reset}
         onReview={() => setShowReview(true)}
       />
     );
   }
+
+  const totalQuestions = questions.length;
+  const answeredQuestions = Object.keys(selectedAnswers).length;
+  const currentQuestionData = questions[currentQuestion];
 
   return (
     <div className="min-h-screen relative overflow-hidden p-4 md:p-8 ">
@@ -154,7 +170,6 @@ const TestScreen: React.FC<TestScreenProps> = ({ questions, onSubmit }) => {
       </div>
 
       <div className="relative grid grid-cols-1 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-        {/* Questions Section */}
         <div className="lg:col-span-3">
           <form onSubmit={handleSubmit} className="space-y-8">
             <QuestionDisplay
@@ -194,7 +209,6 @@ const TestScreen: React.FC<TestScreenProps> = ({ questions, onSubmit }) => {
           </form>
         </div>
 
-        {/* Progress Section */}
         <div className="lg:col-span-1">
           <QuizProgress
             totalQuestions={totalQuestions}

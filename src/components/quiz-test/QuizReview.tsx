@@ -1,6 +1,8 @@
 import React from "react";
 import { FadeIn } from "../ui/motion";
 import YellowButton from "../ui/yellow-button";
+import { toast } from "sonner";
+import { Share2 } from "lucide-react";
 
 interface Question {
   id: number;
@@ -14,13 +16,31 @@ interface QuizReviewProps {
   questions: Question[];
   userAnswers: Record<number, string>;
   onBack: () => void;
+  quizId?: string;
 }
 
 const QuizReview: React.FC<QuizReviewProps> = ({
   questions,
   userAnswers,
   onBack,
+  quizId,
 }) => {
+  const handleShare = async () => {
+    if (!quizId) return;
+    const shareUrl = `${window.location.origin}/quiz/${quizId}`;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success("Quiz link copied to clipboard!", {
+        position: "top-right",
+        duration: 2000,
+      });
+    } catch (err) {
+      toast.error("Failed to copy link", {
+        position: "top-right",
+        duration: 2000,
+      });
+    }
+  };
   return (
     <div className="min-h-screen relative overflow-hidden p-4 md:p-8">
       {/* Decorative Elements */}
@@ -32,9 +52,20 @@ const QuizReview: React.FC<QuizReviewProps> = ({
 
       <div className="relative max-w-4xl mx-auto">
         <FadeIn>
-          <YellowButton className="relative text-lg mb-8 z-10">
-            📝 Quiz Review
-          </YellowButton>
+          <div className="flex items-center gap-4 mb-8 z-10">
+            <YellowButton className="relative text-lg">
+              📝 Quiz Review
+            </YellowButton>
+            {quizId && (
+              <button
+                onClick={handleShare}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-400 text-black rounded-full text-sm font-bold border-2 border-black shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
+              >
+                <Share2 size={16} />
+                Share Quiz
+              </button>
+            )}
+          </div>
         </FadeIn>
 
         <div className="bg-white/90 p-8 rounded-xl border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-8">

@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { FadeIn } from "../ui/motion";
 import YellowButton from "../ui/yellow-button";
+import { formatTime } from "./Timer";
 
 interface QuizResultsProps {
   score: number;
@@ -13,6 +14,25 @@ interface QuizResultsProps {
   onReview?: () => void;
 }
 
+const getPerformanceData = (scorePercentage: number) => ({
+  level:
+    scorePercentage >= 80
+      ? "Excellent!"
+      : scorePercentage >= 60
+      ? "Good Job!"
+      : scorePercentage >= 40
+      ? "Keep Practicing!"
+      : "Need Improvement",
+  emoji:
+    scorePercentage >= 80
+      ? "🎉"
+      : scorePercentage >= 60
+      ? "👏"
+      : scorePercentage >= 40
+      ? "💪"
+      : "📚",
+});
+
 const QuizResults: React.FC<QuizResultsProps> = ({
   score,
   totalQuestions,
@@ -22,30 +42,9 @@ const QuizResults: React.FC<QuizResultsProps> = ({
   onRetry,
   onReview,
 }) => {
-  const formatTime = (seconds: number): string => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
-  };
-
   const scorePercentage = Math.round((correctAnswers / totalQuestions) * 100);
-  const performanceLevel =
-    scorePercentage >= 80
-      ? "Excellent!"
-      : scorePercentage >= 60
-      ? "Good Job!"
-      : scorePercentage >= 40
-      ? "Keep Practicing!"
-      : "Need Improvement";
-
-  const performanceEmoji =
-    scorePercentage >= 80
-      ? "🎉"
-      : scorePercentage >= 60
-      ? "👏"
-      : scorePercentage >= 40
-      ? "💪"
-      : "📚";
+  const { level: performanceLevel, emoji: performanceEmoji } =
+    getPerformanceData(scorePercentage);
 
   return (
     <div className="min-h-screen relative overflow-hidden p-4 md:p-8">

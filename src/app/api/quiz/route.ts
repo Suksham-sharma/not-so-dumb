@@ -1,80 +1,92 @@
-import { OpenAI } from "openai";
 import { NextResponse } from "next/server";
-import { quizValidationSchema, generateQuizPrompt } from "@/lib/quiz";
+import { prisma } from "@/lib/prisma";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+interface QuizQuestion {
+  question: string;
+  options: string[];
+  correctAnswer: string;
+  explanation: string;
+}
 
-export async function POST(req: Request) {
+interface QuizInput {
+  heading: string;
+  topic: string;
+  difficulty: string;
+  questions: QuizQuestion[];
+  youtubeLink?: string;
+  articleLink?: string;
+}
+
+export async function POST(request: Request) {
   try {
-    const body = await req.json();
+    const body = await request.json();
+    const {
+      heading,
+      topic,
+      difficulty,
+      questions,
+      youtubeLink,
+      articleLink,
+    }: QuizInput = body;
 
-    const validationResult = quizValidationSchema.safeParse(body);
-    if (!validationResult.success) {
-      return NextResponse.json(
-        { error: "Invalid input", details: validationResult.error.issues },
-        { status: 400 }
-      );
-    }
-
-    const { numQuestions } = validationResult.data;
-    const prompt = generateQuizPrompt(validationResult.data);
-
-    const completion = await openai.chat.completions.create({
-      messages: [
-        {
-          role: "system",
-          content: `You are a knowledgeable quiz generator that creates engaging multiple-choice questions. Always return exactly ${numQuestions} questions in an array inside a JSON object with a 'questions' key.`,
+    const quiz = await prisma.quiz.create({
+      data: {
+        heading,
+        topic,
+        difficulty,
+        youtubeLink,
+        articleLink,
+        questions: {
+          create: questions.map((q: QuizQuestion) => ({
+            question: q.question,
+            options: q.options,
+            correctAnswer: q.correctAnswer,
+            explanation: q.explanation,
+          })),
         },
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      model: "gpt-4o-mini",
-      temperature: 0.3,
-      response_format: { type: "json_object" },
+      },
+      include: {
+        questions: true,
+      },
     });
 
-    if (!completion.choices[0].message.content) {
-      return NextResponse.json(
-        { error: "Failed to generate quiz" },
-        { status: 500 }
-      );
-    }
-
-    const response = JSON.parse(completion.choices[0].message.content);
-
-    if (
-      !response.questions ||
-      !Array.isArray(response.questions) ||
-      response.questions.length !== numQuestions
-    ) {
-      return NextResponse.json(
-        {
-          error: "Invalid quiz format",
-          details: `Expected ${numQuestions} questions but received ${
-            response.questions?.length || 0
-          }`,
-        },
-        { status: 500 }
-      );
-    }
-
-    // Ensure each question has an ID
-    response.questions = response.questions.map(
-      (question: any[], index: number) => ({
-        ...question,
-        id: index + 1,
-      })
-    );
-
-    return NextResponse.json(response);
+    return NextResponse.json(quiz);
   } catch (error) {
-    console.error("Quiz generation error:", error);
+    console.error("Error creating quiz:", error);
     return NextResponse.json(
-      { error: "Failed to generate quiz" },
+      { error: "Failed to create quiz" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+
+    if (id) {
+      const quiz = await prisma.quiz.findUnique({
+        where: { id },
+        include: { questions: true },
+      });
+
+      if (!quiz) {
+        return NextResponse.json({ error: "Quiz not found" }, { status: 404 });
+      }
+
+      return NextResponse.json(quiz);
+    }
+
+    const quizzes = await prisma.quiz.findMany({
+      include: { questions: true },
+    });
+
+    return NextResponse.json(quizzes);
+  } catch (error) {
+    console.error("Error fetching quiz:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch quiz" },
       { status: 500 }
     );
   }
