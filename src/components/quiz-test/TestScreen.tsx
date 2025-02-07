@@ -41,6 +41,7 @@ const TestScreen: React.FC<TestScreenProps> = ({ questions, onSubmit }) => {
     score,
     setScore,
     reset,
+    heading,
   } = useQuizStore();
 
   const handleOptionSelect = (questionId: number, option: string) => {
@@ -114,7 +115,7 @@ const TestScreen: React.FC<TestScreenProps> = ({ questions, onSubmit }) => {
   };
 
   if (!isStarted) {
-    return <StartQuiz onStart={handleStart} topic="History Quiz" />;
+    return <StartQuiz onStart={handleStart} topic={heading} />;
   }
 
   if (isFinished) {

@@ -1,15 +1,22 @@
 import React from "react";
+import { useQuizStore } from "@/store/quiz";
 
 const Timer = () => {
+  const { isFinished, setTimeTaken } = useQuizStore();
   const [time, setTime] = React.useState(0);
 
   React.useEffect(() => {
+    if (isFinished) {
+      setTimeTaken(time);
+      return;
+    }
+
     const timer = setInterval(() => {
       setTime((prevTime) => prevTime + 1);
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [isFinished, time, setTimeTaken]);
 
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
