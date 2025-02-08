@@ -134,6 +134,7 @@ const TestScreen: React.FC<TestScreenProps> = ({
     if (showReview) {
       return (
         <QuizReview
+          topic={heading}
           questions={questions}
           userAnswers={selectedAnswers}
           onBack={() => setShowReview(false)}

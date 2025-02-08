@@ -8,14 +8,10 @@ datasource db {
 }
 
 model Quiz {
-    id          String     @id @default(cuid())
-    heading     String
-    topic       String
-    difficulty  String
-    createdAt   DateTime   @default(now())
-    questions   Question[]
-    youtubeLink String?
-    articleLink String?
+    id        String     @id @default(cuid())
+    heading   String
+    createdAt DateTime   @default(now())
+    questions Question[]
 }
 
 model Question {

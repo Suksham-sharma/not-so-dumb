@@ -9,33 +9,21 @@ interface QuizQuestion {
 }
 
 interface QuizInput {
-  heading: string;
   topic: string;
-  difficulty: string;
   questions: QuizQuestion[];
-  youtubeLink?: string;
-  articleLink?: string;
 }
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const {
-      heading,
-      topic,
-      difficulty,
-      questions,
-      youtubeLink,
-      articleLink,
-    }: QuizInput = body;
+    console.log("Bodwqy", body);
+    const { topic, questions }: QuizInput = body;
+
+    console.log("data", topic, questions);
 
     const quiz = await prisma.quiz.create({
       data: {
-        heading,
-        topic,
-        difficulty,
-        youtubeLink,
-        articleLink,
+        heading: topic,
         questions: {
           create: questions.map((q: QuizQuestion) => ({
             question: q.question,

@@ -1,37 +1,37 @@
 import { toast } from "sonner";
 import { useState } from "react";
+import axios from "axios";
 
 import { Question } from "@/types/quiz";
 
 interface UseQuizSharingProps {
   quizId?: string;
-  quiz: Question[];
+  topic: string;
+  questions: Question[];
 }
 
 export const useQuizSharing = ({
   quizId: initialQuizId,
-  quiz,
+  topic,
+  questions,
 }: UseQuizSharingProps) => {
   const [isSharing, setIsSharing] = useState(false);
   const [quizId, setQuizId] = useState<string | undefined>(initialQuizId);
 
   const saveQuizToBackend = async () => {
-    if (!quiz) return null;
+    if (!questions) return null;
+
+    console.log("Data to save is ", {
+      topic,
+      questions,
+    });
 
     try {
-      const response = await fetch("/api/quiz", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(quiz),
+      const { data } = await axios.post("/api/quiz", {
+        topic,
+        questions,
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to save quiz");
-      }
-
-      const data = await response.json();
       return data.id;
     } catch (error) {
       console.error("Error saving quiz:", error);
@@ -44,7 +44,7 @@ export const useQuizSharing = ({
     try {
       let currentQuizId = quizId;
 
-      if (!currentQuizId && quiz) {
+      if (!currentQuizId && questions) {
         currentQuizId = await saveQuizToBackend();
         if (!currentQuizId) {
           throw new Error("Failed to generate share link");

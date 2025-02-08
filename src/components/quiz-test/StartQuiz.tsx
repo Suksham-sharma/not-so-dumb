@@ -19,7 +19,8 @@ const StartQuiz: React.FC<StartQuizProps> = ({
 }) => {
   const { handleShare, isSharing } = useQuizSharing({
     quizId,
-    quiz: questions,
+    topic,
+    questions,
   });
   return (
     <div className="min-h-screen relative overflow-hidden p-4 md:p-8">

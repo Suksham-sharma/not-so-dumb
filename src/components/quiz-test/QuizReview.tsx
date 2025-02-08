@@ -13,6 +13,7 @@ interface Question {
 }
 
 interface QuizReviewProps {
+  topic: string;
   questions: Question[];
   userAnswers: Record<number, string>;
   onBack: () => void;
@@ -20,6 +21,7 @@ interface QuizReviewProps {
 }
 
 const QuizReview: React.FC<QuizReviewProps> = ({
+  topic,
   questions,
   userAnswers,
   onBack,
@@ -27,7 +29,8 @@ const QuizReview: React.FC<QuizReviewProps> = ({
 }) => {
   const { handleShare, isSharing } = useQuizSharing({
     quizId,
-    quiz: questions,
+    topic,
+    questions,
   });
   return (
     <div className="min-h-screen relative overflow-hidden p-4 md:p-8">
