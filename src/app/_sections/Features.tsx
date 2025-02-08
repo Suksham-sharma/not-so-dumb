@@ -3,28 +3,28 @@ import Marquee from "react-fast-marquee";
 export default function Features() {
   const features = [
     {
-      title: "Real-Time Web Data",
-      text: "Access up-to-date information from across the internet, ensuring your responses are based on current and accurate data.",
+      title: "Web-Enhanced Research",
+      text: "Get accurate answers powered by advanced LLM technology with real-time web data integration and source verification.",
     },
     {
-      title: "Enhanced Context",
-      text: "Understand queries better by leveraging web context and real-world information to provide more relevant answers.",
+      title: "Smart Quiz Generation",
+      text: "Create custom quizzes from any content source - YouTube videos, articles, or your research materials.",
     },
     {
-      title: "Source Verification",
-      text: "Every response is backed by credible web sources, allowing you to verify information and trust the results.",
+      title: "Source Integration",
+      text: "Seamlessly import content from YouTube videos and articles to generate targeted quizzes and study materials.",
     },
     {
-      title: "Smart Research",
-      text: "Efficiently analyze multiple web sources to compile comprehensive answers to your questions in seconds.",
+      title: "Quiz Sharing",
+      text: "Share your generated quizzes with others and collaborate on learning materials with easy-to-use sharing features.",
     },
     {
-      title: "Bias Detection",
-      text: "Identify and highlight potential biases in source materials, ensuring more balanced and objective responses.",
+      title: "Referenced Answers",
+      text: "Every research response comes with verifiable sources and citations, ensuring accuracy and credibility.",
     },
     {
-      title: "Dynamic Learning",
-      text: "Continuously improve responses by learning from new web data and user interactions for better accuracy.",
+      title: "Customizable Experience",
+      text: "Tailor quiz difficulty, format, and content focus to match your specific learning or assessment needs.",
     },
   ];
 
@@ -32,7 +32,7 @@ export default function Features() {
     <div>
       <section className="border-t-border dark:border-t-darkBorder dark:bg-darkBg border-t-2 bg-bg py-20 font-base lg:py-[100px]">
         <h2 className="mb-14 px-5 text-center text-2xl font-heading md:text-3xl lg:mb-20 lg:text-4xl">
-          Powered by Advanced Web-Enhanced AI Technology
+          Advanced AI Research & Quiz Generation Platform
         </h2>
 
         <div className="mx-auto grid w-container max-w-full grid-cols-1 gap-5 px-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -47,7 +47,6 @@ export default function Features() {
               </div>
             );
           })}
-          ;
         </div>
       </section>
       <div>
@@ -61,7 +60,7 @@ export default function Features() {
               return (
                 <div className="flex items-center" key={id}>
                   <span className="mx-8 text-xl font-heading sm:text-2xl lg:text-4xl">
-                    AI Research Assistant
+                    Research & Quiz Generation Platform
                   </span>
                 </div>
               );

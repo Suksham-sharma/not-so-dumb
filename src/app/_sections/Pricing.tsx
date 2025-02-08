@@ -10,42 +10,42 @@ export default function Pricing() {
         <div className="grid grid-cols-3 gap-8 w900:mx-auto w900:w-2/3 w900:grid-cols-1 w500:w-full">
           <PricingPlan
             planName="Starter"
-            description="Perfect for individual developers and small projects"
+            description="Perfect for students and individual researchers"
             price="29"
             perks={[
-              "100,000 tokens per month",
-              "Access to base LLM model",
-              "Standard API rate limits",
+              "50 AI-powered quizzes per month",
+              "Web-enhanced research queries",
+              "Basic quiz sharing features",
               "Community support",
-              "Basic analytics dashboard",
+              "Standard response time",
             ]}
           />
           <PricingPlan
             planName="Pro"
-            description="Ideal for growing businesses and AI applications"
+            description="Ideal for educators and research teams"
             price="99"
             perks={[
-              "1,000,000 tokens per month",
-              "Access to advanced LLM models",
-              "Priority API access",
-              "24/7 email support",
-              "Advanced analytics",
-              "Custom API endpoints",
+              "Unlimited AI-powered quizzes",
+              "Advanced research capabilities",
+              "Premium quiz templates",
+              "Priority support",
+              "Quiz analytics dashboard",
+              "Team sharing features",
             ]}
             mostPopular
           />
           <PricingPlan
             planName="Enterprise"
-            description="For large-scale AI implementations"
+            description="For educational institutions and organizations"
             price="299"
             perks={[
-              "Unlimited tokens",
-              "Access to all LLM models",
-              "Dedicated API infrastructure",
-              "24/7 priority support",
-              "Custom model fine-tuning",
-              "Advanced security features",
-              "Enterprise SLA",
+              "Custom quiz generation models",
+              "Advanced research API access",
+              "Dedicated support team",
+              "Enterprise-grade security",
+              "Custom integrations",
+              "Advanced analytics",
+              "Unlimited team members",
             ]}
           />
         </div>

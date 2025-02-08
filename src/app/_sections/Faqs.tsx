@@ -21,35 +21,35 @@ export default function Faq() {
                 What is notSoDumb and how does it work?
               </AccordionTrigger>
               <AccordionContent>
-                notSoDumb is an AI-powered content research assistant that helps
-                you gather, analyze, and synthesize information from various
-                sources. It uses advanced language models to understand your
-                queries and provide comprehensive, well-researched responses
-                with proper citations.
+                notSoDumb is a dual-purpose AI platform that combines advanced
+                research capabilities with intelligent quiz generation. It uses
+                web-powered LLM technology to provide referenced answers and
+                create customized quizzes from various sources including YouTube
+                videos and articles.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem className="mb-2" value="item-2">
               <AccordionTrigger>
-                How accurate and reliable are the AI-generated responses?
+                How does the quiz generation feature work?
               </AccordionTrigger>
               <AccordionContent>
-                Our AI system provides highly accurate responses by combining
-                advanced language models with real-time web search capabilities.
-                Each response includes citations to source materials, allowing
-                you to verify the information. However, we recommend reviewing
-                the sources and using critical judgment for crucial decisions.
+                Our quiz generation system allows you to create custom quizzes
+                from any content source. Simply provide a YouTube video link,
+                article URL, or your own research material, and our AI will
+                generate relevant questions and answers. You can customize quiz
+                difficulty and format, and easily share quizzes with others.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem className="mb-2" value="item-3">
               <AccordionTrigger>
-                What about data privacy and security?
+                How accurate and reliable are the research responses?
               </AccordionTrigger>
               <AccordionContent>
-                We take data privacy seriously. Your queries and usage data are
-                handled securely, and we don&apos;t store sensitive personal
-                information. Our AI processing follows industry best practices
-                for data protection, and we&apos;re transparent about our data
-                handling policies.
+                Our web-powered LLM technology provides highly accurate
+                responses by combining advanced language models with real-time
+                web data integration. Every answer includes verifiable sources
+                and citations, allowing you to check the information&apos;s
+                credibility and accuracy.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-4">
@@ -57,11 +57,11 @@ export default function Faq() {
                 What are the usage limits and pricing plans?
               </AccordionTrigger>
               <AccordionContent>
-                We offer flexible pricing plans to suit different needs, from
-                individual researchers to enterprise users. Each plan includes a
-                monthly token allocation, with the ability to upgrade or
-                purchase additional tokens as needed. Check our pricing section
-                for detailed information about plans and features.
+                We offer flexible pricing plans to suit different needs. Each
+                plan includes monthly token allocations for both research
+                queries and quiz generation. You can create and share unlimited
+                quizzes, with additional features like custom API endpoints and
+                advanced analytics available in higher tiers.
               </AccordionContent>
             </AccordionItem>
           </Accordion>
@@ -78,7 +78,7 @@ export default function Faq() {
               return (
                 <div className="flex items-center" key={id}>
                   <span className="mx-8 text-xl font-heading sm:text-2xl lg:text-4xl">
-                    Next-Gen
+                    AI-Powered Research & Quiz Platform
                   </span>
                 </div>
               );
