@@ -15,6 +15,7 @@ export const useAuth = () => {
     try {
       const { token, user } = await authService.login(data);
       authService.saveAuthData(token, user);
+      document.cookie = `token=${token}; path=/; max-age=604800`; // 7 days
       toast.success("Login successful!");
       router.push("/quiz");
     } catch (error) {
@@ -27,6 +28,7 @@ export const useAuth = () => {
     try {
       const { token, user } = await authService.signup(data);
       authService.saveAuthData(token, user);
+      document.cookie = `token=${token}; path=/; max-age=604800`;
       toast.success("Account created successfully!");
       router.push("/quiz");
     } catch (error) {
@@ -37,12 +39,19 @@ export const useAuth = () => {
 
   const logout = () => {
     authService.clearAuthData();
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     router.push("/login");
+  };
+
+  const isAuthenticated = () => {
+    const { token } = authService.getAuthData();
+    return !!token;
   };
 
   const getAuthData = () => {
     return authService.getAuthData();
   };
 
-  return { login, logout, signup, getAuthData };
+  const { user } = getAuthData();
+  return { login, logout, signup, getAuthData, isAuthenticated, user };
 };

@@ -9,8 +9,26 @@ export interface LoginFormData {
 
 export interface AuthResponse {
   token: string;
-  user: any; // TODO: Define proper user type
+  user: any;
 }
+
+import { useAuthStore } from "@/store/auth";
+
+axios.interceptors.request.use(
+  (config) => {
+    if (typeof window !== "undefined") {
+      const token = useAuthStore.getState().token;
+      if (token) {
+        config.headers = config.headers || {};
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export const authService = {
   login: async (data: LoginFormData): Promise<AuthResponse> => {
@@ -26,38 +44,20 @@ export const authService = {
   },
 
   saveAuthData: (token: string, user: any) => {
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
+    useAuthStore.getState().setAuthData(token, user);
   },
 
   getAuthData: () => {
-    const token = localStorage.getItem("token");
-    const user = localStorage.getItem("user");
-    return {
-      token,
-      user: user ? JSON.parse(user) : null,
-    };
+    const { token, user } = useAuthStore.getState();
+    return { token, user };
   },
 
   clearAuthData: () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    useAuthStore.getState().clearAuthData();
   },
 
   signup: async (data: SignupFormData) => {
-    const response = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || "Signup failed");
-    }
-
-    return response.json();
+    const response = await axios.post("/api/auth/signup", data);
+    return response.data;
   },
 };
