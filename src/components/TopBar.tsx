@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
@@ -10,6 +10,11 @@ const TopBar = () => {
   const isQuizPage = pathname === "/quiz";
   const { user, logout } = useAuth();
   const [showDropdown, setShowDropdown] = React.useState(false);
+  const [mounted, setMounted] = React.useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -32,7 +37,7 @@ const TopBar = () => {
         >
           {isQuizPage ? "Enhanced Search" : "Generate Quiz"}
         </Link>
-        {user && (
+        {mounted && user && (
           <div className="relative">
             <button
               onClick={() => setShowDropdown(!showDropdown)}
