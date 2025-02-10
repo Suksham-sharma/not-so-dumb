@@ -56,7 +56,12 @@ export const PreviewSection: React.FC<PreviewSectionProps> = ({
           </div>
         )}
         <div className="flex-1 flex flex-col justify-between">
-          <h3 className="font-bold text-xl">{formTitle || preview.title}</h3>
+          <h3
+            className="font-bold text-xl line-clamp-2 hover:text-clip"
+            title={formTitle || preview.title}
+          >
+            {formTitle || preview.title}
+          </h3>
           <div className="mt-2 text-sm text-gray-600">
             Click to preview full content
           </div>

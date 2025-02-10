@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(request: Request) {
   try {
-    const { url, title, tags } = await request.json();
+    const { url, title, tags, image } = await request.json();
     console.log("Request Body:", { url, title, tags });
     const userId = request.headers.get("x-user-id");
 
@@ -16,6 +16,7 @@ export async function POST(request: Request) {
         url,
         title,
         userId,
+        image,
         tags: {
           connect: tags.map((tag: string) => ({
             name: tag,

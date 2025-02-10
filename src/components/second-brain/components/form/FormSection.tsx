@@ -24,7 +24,7 @@ const FormSectionComponent: React.FC<FormSectionProps> = ({
   setNewLink,
   isLoading,
 }) => {
-  const { register, watch } = useForm<FormValues>({
+  const { register, watch, setValue } = useForm<FormValues>({
     defaultValues: newLink,
   });
 
@@ -50,6 +50,11 @@ const FormSectionComponent: React.FC<FormSectionProps> = ({
     });
     return () => subscription.unsubscribe();
   }, [watch, setNewLink]);
+
+  // Add effect to sync with newLink changes
+  useEffect(() => {
+    setValue("title", newLink.title);
+  }, [newLink.title, setValue]);
 
   const handleTagInput = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && inputTag.trim()) {
@@ -93,6 +98,7 @@ const FormSectionComponent: React.FC<FormSectionProps> = ({
               message: "Please enter a valid URL",
             },
           })}
+          autoComplete="off"
           className="w-full p-3 rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-none transition-all"
           placeholder="https://example.com"
           required

@@ -42,6 +42,17 @@
   animation: grid-pulse 8s infinite;
 }
 
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+      display: none;
+  }
+
+  .no-scrollbar {
+      -ms-overflow-style: none; 
+      scrollbar-width: none;
+}
+}
+
 :root {
   --main: #FD9745;
   --overlay: rgba(0, 0, 0, 0.8); /* background color overlay for alert dialogs, modals, etc. */

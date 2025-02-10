@@ -36,6 +36,7 @@ const LinkForm: React.FC<LinkFormProps> = ({
         url: formData.url,
         title: formData.title,
         tags: formData.tags.filter((tag) => tag !== ""),
+        image: preview?.image ?? undefined,
       });
       setFormData({ url: "", title: "", tags: [] });
       onSubmit(e);
@@ -53,10 +54,10 @@ const LinkForm: React.FC<LinkFormProps> = ({
   );
 
   React.useEffect(() => {
-    if (preview?.title && !formData.title) {
+    if (preview?.title) {
       setFormData((prev) => ({ ...prev, title: preview.title }));
     }
-  }, [preview, formData.title]);
+  }, [preview]);
 
   return (
     <motion.form
