@@ -1,11 +1,10 @@
 "use client";
 import React from "react";
-import { motion } from "framer-motion";
 import { Tag, Link as LinkIcon } from "lucide-react";
 import { FadeIn } from "@/components/ui/motion";
 
 interface Link {
-  id: string;
+  id?: string;
   url: string;
   title: string;
   tags: string[];
@@ -16,6 +15,7 @@ interface LinkCardProps {
 }
 
 const LinkCard: React.FC<LinkCardProps> = ({ link }) => {
+  console.log("Link Card", link);
   return (
     <FadeIn className="bg-white/90 p-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
       <div className="flex items-start gap-4">

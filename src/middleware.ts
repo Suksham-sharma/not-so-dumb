@@ -4,6 +4,7 @@ import { jwtVerify } from "jose";
 
 export async function middleware(request: NextRequest) {
   let token: string | undefined;
+  console.log("Starting Request");
 
   const authHeader = request.headers.get("Authorization");
   if (authHeader?.startsWith("Bearer ")) {
@@ -15,7 +16,17 @@ export async function middleware(request: NextRequest) {
     token = tokenFromCookie?.value;
   }
 
-  const protectedPaths = ["/home", "/quiz/test", "/quiz", "/profile"];
+  console.log("Token", token);
+
+  const protectedPaths = [
+    "/home",
+    "/quiz/test",
+    "/quiz",
+    "/profile",
+    "/second-brain",
+    "/api/tags",
+    "/api/resources",
+  ];
   const isProtectedPath = protectedPaths.some(
     (path) => request.nextUrl.pathname === path
   );
@@ -27,6 +38,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  console.log("Pathname", request.nextUrl.pathname);
+
   if (!isProtectedPath) {
     return NextResponse.next();
   }
@@ -35,17 +48,25 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
+  console.log("Token 2", token);
+
   try {
-    await jwtVerify(
+    const { payload } = await jwtVerify(
       token,
       new TextEncoder().encode(process.env.JWT_SECRET || "fallback-secret")
     );
-    return NextResponse.next();
+
+    console.log("Payload", payload);
+    const response = NextResponse.next();
+
+    response.headers.set("x-user-id", payload.userId as string);
+    console.log("Response", response);
+    return response;
   } catch (error) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 }
 
 export const config = {
-  matcher: ["/quiz/:path*", "/profile/:path*"],
+  matcher: ["/quiz/:path*", "/profile/:path*", "/api/:path*"],
 };

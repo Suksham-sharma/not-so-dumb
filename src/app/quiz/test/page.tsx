@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import TestScreen from "@/components/quiz-test/TestScreen";
 import { useQuizStore } from "@/store/quiz";
 import { useRouter } from "next/navigation";
@@ -9,7 +9,7 @@ export default function TestPage() {
   const { questions, heading } = useQuizStore();
   const router = useRouter();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!questions || questions.length === 0) {
       router.push("/quiz");
     }

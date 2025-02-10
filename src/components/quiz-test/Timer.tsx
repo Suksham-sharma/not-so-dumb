@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuizStore } from "@/store/quiz";
 
 const useTimer = (
@@ -7,7 +7,7 @@ const useTimer = (
 ) => {
   const [time, setTime] = React.useState(0);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isFinished) {
       setTimeTaken(time);
       return;

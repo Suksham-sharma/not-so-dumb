@@ -1,65 +1,32 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import LinkForm from "./components/LinkForm";
 import LinkCard from "./components/LinkCard";
 import SearchFilter from "./components/SearchFilter";
 import { Plus } from "lucide-react";
 import { FadeIn } from "@/components/ui/motion";
-
-interface Link {
-  id: string;
-  url: string;
-  title: string;
-  tags: string[];
-}
+import { useLinksStore } from "@/store/links";
 
 const SecondBrain: React.FC = () => {
-  const [links, setLinks] = React.useState<Link[]>(() => {
-    if (typeof window !== "undefined") {
-      const savedLinks = localStorage.getItem("savedLinks");
-      return savedLinks ? JSON.parse(savedLinks) : [];
-    }
-    return [];
-  });
-  const [newLink, setNewLink] = React.useState({
-    url: "",
-    title: "",
-    tags: "",
-  });
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+  const {
+    links,
+    isLoading: isLoadingLinks,
+    error: linksError,
+    fetchLinks,
+  } = useLinksStore();
+
+  useEffect(() => {
+    fetchLinks();
+  }, [fetchLinks]);
+
   const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedTag, setSelectedTag] = React.useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-  React.useEffect(() => {
-    if (links.length > 0) {
-      localStorage.setItem("savedLinks", JSON.stringify(links));
-    }
-  }, [links]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setIsLoading(true);
-
-    try {
-      const tags = newLink.tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter(Boolean);
-
-      new URL(newLink.url);
-
-      const newLinkItem = { id: Date.now().toString(), ...newLink, tags };
-      setLinks((prevLinks) => [...prevLinks, newLinkItem]);
-      setNewLink({ url: "", title: "", tags: "" });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Invalid URL format");
-    } finally {
-      setIsLoading(false);
-    }
+    setIsModalOpen(false);
   };
 
   const availableTags = React.useMemo(() => {
@@ -142,15 +109,7 @@ const SecondBrain: React.FC = () => {
                 >
                   ×
                 </button>
-                <LinkForm
-                  onSubmit={(e) => {
-                    handleSubmit(e);
-                    setIsModalOpen(false);
-                  }}
-                  newLink={newLink}
-                  setNewLink={setNewLink}
-                  isLoading={isLoading}
-                />
+                <LinkForm onSubmit={handleSubmit} isLoading={isLoadingLinks} />
               </div>
             </FadeIn>
           </div>

@@ -1,153 +1,66 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
-import { Plus, Link as LinkIcon } from "lucide-react";
-import Image from "next/image";
 import { usePreviewData } from "@/hooks/usePreviewData";
+import { FormSection } from "./form/FormSection";
+import { PreviewSection } from "./form/PreviewSection";
+import { useLinksStore } from "@/store/links";
+import { toast } from "sonner";
 
 interface LinkFormProps {
   onSubmit: (e: React.FormEvent) => void;
-  newLink: {
-    url: string;
-    title: string;
-    tags: string;
-  };
-  setNewLink: React.Dispatch<
-    React.SetStateAction<{
-      url: string;
-      title: string;
-      tags: string;
-    }>
-  >;
   isLoading: boolean;
 }
 
 const LinkForm: React.FC<LinkFormProps> = ({
   onSubmit,
-  newLink,
-  setNewLink,
-  isLoading,
+  isLoading: parentIsLoading,
 }) => {
+  const { addLink, isLoading: isSaving } = useLinksStore();
+  const [formData, setFormData] = React.useState({
+    url: "",
+    title: "",
+    tags: [] as string[],
+  });
+
   const handleTitleFound = (title: string) => {
-    if (!newLink.title) {
-      setNewLink((prev) => ({ ...prev, title }));
+    if (!formData.title) {
+      setFormData((prev) => ({ ...prev, title }));
+    }
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await addLink({
+        url: formData.url,
+        title: formData.title,
+        tags: formData.tags.filter((tag) => tag !== ""),
+      });
+      setFormData({ url: "", title: "", tags: [] });
+      onSubmit(e);
+    } catch (error) {
+      console.error("Error saving link:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to save link"
+      );
     }
   };
 
   const { preview, isLoading: isLoadingPreview } = usePreviewData(
-    newLink.url,
+    formData.url,
     handleTitleFound
   );
 
-  const PreviewSection = ({
-    preview,
-    isLoadingPreview,
-  }: {
-    preview: any;
-    isLoadingPreview: boolean;
-  }) => {
-    if (isLoadingPreview) {
-      return (
-        <div className="animate-pulse bg-gray-200 h-[400px] rounded-lg border-2 border-black" />
-      );
+  React.useEffect(() => {
+    if (preview?.title && !formData.title) {
+      setFormData((prev) => ({ ...prev, title: preview.title }));
     }
-
-    if (!preview) {
-      return (
-        <div className="h-[400px] bg-white/50 rounded-lg border-2 border-black p-6 flex flex-col items-center justify-center text-center space-y-4">
-          <div className="w-16 h-16 bg-orange-400 border-2 border-black rounded-lg flex items-center justify-center">
-            <LinkIcon size={32} />
-          </div>
-          <h3 className="font-bold text-lg">Preview Your Link</h3>
-          <p className="text-gray-600 max-w-sm">
-            Enter a URL above to see a preview of the content. We&apos;ll
-            automatically fetch the title, description, and image if available.
-          </p>
-        </div>
-      );
-    }
-
-    return (
-      <div className="bg-white p-6 rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none h-[400px] flex flex-col">
-        <div className="flex-1">
-          {preview.image && (
-            <div className="relative h-48 mb-4">
-              <Image
-                src={preview.image}
-                alt={preview.title}
-                fill
-                className="object-cover rounded-lg border-2 border-black"
-              />
-            </div>
-          )}
-          <div className="space-y-2">
-            <h3 className="font-bold text-xl truncate">{preview.title}</h3>
-            <p className="text-gray-600 line-clamp-3">{preview.description}</p>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const FormSection = ({
-    newLink,
-    setNewLink,
-    isLoading,
-  }: {
-    newLink: LinkFormProps["newLink"];
-    setNewLink: LinkFormProps["setNewLink"];
-    isLoading: boolean;
-  }) => (
-    <div className="space-y-4">
-      <div>
-        <label className="block text-sm font-bold mb-2">Resource URL</label>
-        <input
-          type="url"
-          value={newLink.url}
-          onChange={(e) => setNewLink({ ...newLink, url: e.target.value })}
-          className="w-full p-3 rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-none transition-all"
-          placeholder="https://example.com"
-          required
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-bold mb-2">Resource Title</label>
-        <input
-          type="text"
-          value={newLink.title}
-          onChange={(e) => setNewLink({ ...newLink, title: e.target.value })}
-          className="w-full p-3 rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-none transition-all"
-          placeholder="Give your resource a memorable title"
-          required
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-bold mb-2">Knowledge Tags</label>
-        <input
-          type="text"
-          value={newLink.tags}
-          onChange={(e) => setNewLink({ ...newLink, tags: e.target.value })}
-          className="w-full p-3 rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-none transition-all"
-          placeholder="Add tags for easy retrieval (comma-separated)"
-        />
-      </div>
-
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full bg-orange-400 text-black font-bold py-3 px-6 rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        <Plus size={20} />
-        Save to Second Brain
-      </button>
-    </div>
-  );
+  }, [preview, formData.title]);
 
   return (
     <motion.form
-      onSubmit={onSubmit}
+      onSubmit={handleFormSubmit}
       className="bg-gray-50 p-6 md:p-8 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-300"
     >
       <div className="relative mb-8">
@@ -163,11 +76,15 @@ const LinkForm: React.FC<LinkFormProps> = ({
 
       <div className="grid md:grid-cols-2 gap-6 md:gap-8">
         <FormSection
-          newLink={newLink}
-          setNewLink={setNewLink}
-          isLoading={isLoading}
+          newLink={formData}
+          setNewLink={setFormData}
+          isLoading={parentIsLoading || isSaving}
         />
-        <PreviewSection preview={preview} isLoadingPreview={isLoadingPreview} />
+        <PreviewSection
+          preview={preview}
+          isLoadingPreview={isLoadingPreview}
+          formTitle={formData.title}
+        />
       </div>
     </motion.form>
   );
