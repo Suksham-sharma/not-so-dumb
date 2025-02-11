@@ -58,7 +58,7 @@ const LinkCard: React.FC<LinkCardProps> = ({ link }) => {
                   link.tags.map((tag, index) => (
                     <span
                       key={index}
-                      className="inline-flex flex-shrink-0 items-center gap-1 px-3 py-1.5 text-sm font-bold rounded-full border-2 border-black transition-all hover:translate-y-[-2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden"
+                      className="inline-flex flex-shrink-0 items-center gap-1 px-3 py-1.5 text-sm font-bold rounded-md border-2 border-black transition-all hover:translate-y-[-2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden"
                       style={{
                         backgroundSize: "cover",
                         backgroundImage: `url(https://api.dicebear.com/9.x/glass/svg?seed=${encodeURIComponent(

@@ -5,6 +5,7 @@ import LinkForm from "./components/LinkForm";
 import LinkCard from "./components/LinkCard";
 import SearchFilter from "./components/SearchFilter";
 import { Plus } from "lucide-react";
+import Image from "next/image";
 import { FadeIn } from "@/components/ui/motion";
 import { useLinksStore } from "@/store/links";
 
@@ -31,7 +32,8 @@ const SecondBrain: React.FC = () => {
 
   const availableTags = React.useMemo(() => {
     const tagSet = new Set<string>();
-    links.forEach((link) => {
+    console.log("links", links);
+    links?.forEach((link) => {
       link.tags.forEach((tag) => tagSet.add(tag));
     });
     return Array.from(tagSet);
@@ -121,7 +123,12 @@ const SecondBrain: React.FC = () => {
                       transition={{ delay: 0.3, duration: 0.5 }}
                       whileHover={{ scale: 1.02 }}
                     >
-                      <Plus size={20} />
+                      <Image
+                        src="/feather.png"
+                        alt="Add"
+                        width={20}
+                        height={20}
+                      />
                       Add Your First Resource
                     </motion.button>
                   )}
@@ -133,11 +140,11 @@ const SecondBrain: React.FC = () => {
 
         <motion.button
           onClick={() => setIsModalOpen(true)}
-          className="fixed bottom-8 right-8 w-16 h-16 bg-orange-400 text-black rounded-full border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none flex items-center justify-center"
+          className="fixed bottom-8 right-8 w-16 h-16 bg-yellow-300 text-black rounded-full border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none flex items-center justify-center"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <Plus size={24} />
+          <Image src="/feather.png" alt="Add" width={40} height={40} />
         </motion.button>
 
         {/* Modal Overlay */}

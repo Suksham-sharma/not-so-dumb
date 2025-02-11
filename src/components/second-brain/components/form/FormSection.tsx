@@ -4,6 +4,7 @@ import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useTags } from "@/hooks/useTags";
 import { toast } from "sonner";
+import Image from "next/image";
 
 interface FormValues {
   url: string;
@@ -202,7 +203,7 @@ const FormSectionComponent: React.FC<FormSectionProps> = ({
         disabled={isLoading}
         className="w-full bg-orange-400 text-black font-bold py-3 px-6 rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <Plus size={20} />
+        <Image src="/feather.png" alt="Add" width={28} height={32} />
         Save to Second Brain
       </button>
     </div>
