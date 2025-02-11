@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { FadeIn, GradientBlob } from "@/components/ui/motion";
 import YellowButton from "@/components/ui/yellow-button";
+import Link from "next/link";
 
 export default function Header() {
   return (
@@ -36,20 +37,38 @@ export default function Header() {
           content into knowledge.
         </FadeIn>
 
-        <FadeIn delay={0.3} className="flex items-center justify-center gap-4">
-          <Button
-            size="lg"
-            className="h-14 border-2 border-black bg-green-400 px-8 text-lg font-heading shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none lg:text-xl"
-          >
-            Start Researching
-          </Button>
-          <Button
-            variant="neutral"
-            size="lg"
-            className="h-14 border-2 border-black px-8 text-lg font-heading shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none lg:text-xl"
-          >
-            Create Quiz
-          </Button>
+        <FadeIn
+          delay={0.3}
+          className="flex items-center justify-center gap-4 flex-wrap"
+        >
+          <Link href="/home" className="w-full sm:w-auto">
+            <Button
+              size="lg"
+              className="w-full h-14 border-2 border-black bg-green-400 px-8 text-lg font-heading shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none lg:text-xl"
+            >
+              Start Researching
+            </Button>
+          </Link>
+          <div className="flex gap-4 w-full sm:w-auto">
+            <Link href="/quiz" className="flex-1 sm:flex-initial">
+              <Button
+                variant="neutral"
+                size="lg"
+                className="w-full h-14 border-2 border-black px-8 text-lg font-heading shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none lg:text-xl"
+              >
+                Create Quiz
+              </Button>
+            </Link>
+            <Link href="/second-brain" className="flex-1 sm:flex-initial">
+              <Button
+                variant="neutral"
+                size="lg"
+                className="w-full h-14 border-2 border-black bg-blue-400 px-8 text-lg font-heading shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none lg:text-xl"
+              >
+                Second Brain
+              </Button>
+            </Link>
+          </div>
         </FadeIn>
       </div>
     </header>

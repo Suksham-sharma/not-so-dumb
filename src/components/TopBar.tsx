@@ -23,13 +23,16 @@ const TopBar = () => {
 
   return (
     <div className="fixed top-4 left-4 right-4 h-16 bg-white/80 backdrop-blur-sm border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-between px-6 z-50 rounded-2xl">
-      <h1 className="text-2xl font-heading text-black tracking-tight flex items-center gap-2">
+      <Link
+        href="/"
+        className="text-2xl font-heading text-black tracking-tight flex items-center gap-2 hover:opacity-80 transition-opacity"
+      >
         <span className="text-3xl">🧠</span>
         <span className="relative">
           notSoDumb
           <div className="absolute -bottom-1 left-0 h-2 w-full bg-yellow-300 -z-10" />
         </span>
-      </h1>
+      </Link>
       <div className="flex items-center gap-4">
         <Link
           href={isQuizPage ? "/home" : "/quiz"}
