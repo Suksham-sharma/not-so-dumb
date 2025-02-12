@@ -6,6 +6,7 @@ import { FormSection } from "./form/FormSection";
 import { PreviewSection } from "./form/PreviewSection";
 import { useLinksStore } from "@/store/links";
 import { toast } from "sonner";
+import { toastStyles } from "@/lib/styles";
 
 interface LinkFormProps {
   onSubmit: (e: React.FormEvent) => void;
@@ -43,7 +44,10 @@ const LinkForm: React.FC<LinkFormProps> = ({
     } catch (error) {
       console.error("Error saving link:", error);
       toast.error(
-        error instanceof Error ? error.message : "Failed to save link"
+        error instanceof Error ? error.message : "Failed to save link",
+        {
+          className: toastStyles.error,
+        }
       );
     }
   };

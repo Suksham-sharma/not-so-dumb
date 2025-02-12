@@ -15,6 +15,7 @@ interface LinksState {
   error: string | null;
   fetchLinks: () => Promise<void>;
   addLink: (link: Omit<Link, "id">) => Promise<void>;
+  deleteLink: (id: string) => Promise<void>;
   setLinks: (links: Link[]) => void;
 }
 
@@ -61,4 +62,21 @@ export const useLinksStore = create<LinksState>((set) => ({
   },
 
   setLinks: (links) => set({ links }),
+
+  deleteLink: async (id) => {
+    set({ isLoading: true, error: null });
+    try {
+      await axios.delete(`/api/resources?id=${id}`);
+      set((state) => ({
+        links: state.links.filter((link) => link.id !== id),
+        isLoading: false,
+      }));
+    } catch (err) {
+      set({
+        error: err instanceof Error ? err.message : "Failed to delete link",
+        isLoading: false,
+      });
+      throw err;
+    }
+  },
 }));

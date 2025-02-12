@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { Tag, Link as LinkIcon } from "lucide-react";
+import { Tag, Link as LinkIcon, Trash2 } from "lucide-react";
 import { FadeIn } from "@/components/ui/motion";
 import { motion } from "framer-motion";
 
@@ -15,20 +15,35 @@ interface Link {
 
 interface LinkCardProps {
   link: Link;
+  onDeleteClick: (id: string) => void;
 }
 
-const LinkCard: React.FC<LinkCardProps> = ({ link }) => {
-  const handleClick = () => {
+const LinkCard: React.FC<LinkCardProps> = ({ link, onDeleteClick }) => {
+  const handleClick = (e: React.MouseEvent) => {
+    if (e.defaultPrevented) return;
     window.open(link.url, "_blank", "noopener,noreferrer");
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!link.id) return;
+    onDeleteClick(link.id);
   };
 
   return (
     <FadeIn>
       <motion.div
         onClick={handleClick}
-        className="group cursor-pointer bg-white p-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all duration-300 h-[350px] flex flex-col"
+        className="group relative cursor-pointer bg-white p-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all duration-300 h-[350px] flex flex-col"
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
+        <button
+          onClick={handleDelete}
+          className="absolute -top-2 -right-2 w-8 h-8 bg-red-400 text-black rounded-full border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none flex items-center justify-center z-10"
+        >
+          <Trash2 size={14} />
+        </button>
+
         <div className="flex-1 flex flex-col">
           <div className="relative h-48 mb-6 flex-shrink-0 overflow-hidden rounded-lg border-2 border-black">
             {link.image ? (

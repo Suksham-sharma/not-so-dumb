@@ -4,10 +4,12 @@ import { motion } from "framer-motion";
 import LinkForm from "./components/LinkForm";
 import LinkCard from "./components/LinkCard";
 import SearchFilter from "./components/SearchFilter";
-import { Plus } from "lucide-react";
 import Image from "next/image";
 import { FadeIn } from "@/components/ui/motion";
 import { useLinksStore } from "@/store/links";
+import LinkCardSkeleton from "./components/LinkCardSkeleton";
+import { toast } from "sonner";
+import { toastStyles } from "@/lib/styles";
 
 const SecondBrain: React.FC = () => {
   const {
@@ -15,6 +17,7 @@ const SecondBrain: React.FC = () => {
     isLoading: isLoadingLinks,
     error: linksError,
     fetchLinks,
+    deleteLink,
   } = useLinksStore();
 
   useEffect(() => {
@@ -24,15 +27,43 @@ const SecondBrain: React.FC = () => {
   const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedTag, setSelectedTag] = React.useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
+  const [linkToDelete, setLinkToDelete] = React.useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsModalOpen(false);
   };
 
+  const handleDeleteClick = (id: string) => {
+    setLinkToDelete(id);
+    setDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!linkToDelete) return;
+    try {
+      console.log("Deleting resource...", linkToDelete);
+      await deleteLink(linkToDelete);
+      toast.success("Resource deleted successfully", {
+        className: toastStyles.success,
+        duration: 3000,
+        position: "bottom-right",
+      });
+    } catch (error) {
+      console.error("Error deleting resource:", error);
+      toast.error("Failed to delete resource", {
+        className: toastStyles.error,
+        duration: 3000,
+        position: "bottom-right",
+      });
+    } finally {
+      setDeleteModalOpen(false);
+    }
+  };
+
   const availableTags = React.useMemo(() => {
     const tagSet = new Set<string>();
-    console.log("links", links);
     links?.forEach((link) => {
       link.tags.forEach((tag) => tagSet.add(tag));
     });
@@ -49,7 +80,9 @@ const SecondBrain: React.FC = () => {
           )
         : true;
 
-      const matchesTag = selectedTag ? link.tags.includes(selectedTag) : true;
+      const matchesTag = selectedTag
+        ? link.tags.some((tag) => tag === selectedTag)
+        : true;
 
       return matchesSearch && matchesTag;
     });
@@ -78,64 +111,71 @@ const SecondBrain: React.FC = () => {
             selectedTag={selectedTag}
           />
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredLinks.map((link) => (
-              <LinkCard key={link.id} link={link} />
-            ))}
-          </div>
-          {filteredLinks.length === 0 && (
-            <FadeIn className="p-8 bg-white/80 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none">
-              <div className="flex items-center gap-8">
-                <motion.img
-                  src="/GetStarted.png"
-                  alt="Get Started Illustration"
-                  className="w-56 h-56 object-contain flex-shrink-0"
-                  initial={{ scale: 0.8, opacity: 0, x: -20 }}
-                  animate={{ scale: 1, opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5 }}
+            {isLoadingLinks ? (
+              [...Array(3)].map((_, index) => <LinkCardSkeleton key={index} />)
+            ) : filteredLinks.length > 0 ? (
+              filteredLinks.map((link) => (
+                <LinkCard
+                  key={link.id}
+                  link={link}
+                  onDeleteClick={handleDeleteClick}
                 />
-                <div className="flex-1 space-y-4">
-                  <motion.h3
-                    className="text-2xl font-bold"
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.1, duration: 0.5 }}
-                  >
-                    {links.length === 0
-                      ? "Time to Build Your Knowledge Base!"
-                      : "No Matches Found"}
-                  </motion.h3>
-                  <motion.p
-                    className="text-gray-600 text-lg"
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.2, duration: 0.5 }}
-                  >
-                    {links.length === 0
-                      ? "Your Second Brain is ready to grow. Start by adding your favorite articles, videos, or any online resources you want to remember."
-                      : "Try adjusting your search terms or filters to find what you're looking for."}
-                  </motion.p>
-                  {links.length === 0 && (
-                    <motion.button
-                      onClick={() => setIsModalOpen(true)}
-                      className="mt-4 px-6 py-3 bg-orange-400 text-black font-bold rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none inline-flex items-center gap-2"
+              ))
+            ) : (
+              <FadeIn className="col-span-full p-8 bg-white/80 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none">
+                <div className="flex items-center gap-8">
+                  <motion.img
+                    src="/GetStarted.png"
+                    alt="Get Started Illustration"
+                    className="w-56 h-56 object-contain flex-shrink-0"
+                    initial={{ scale: 0.8, opacity: 0, x: -20 }}
+                    animate={{ scale: 1, opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5 }}
+                  />
+                  <div className="flex-1 space-y-4">
+                    <motion.h3
+                      className="text-2xl font-bold"
                       initial={{ y: 20, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
-                      transition={{ delay: 0.3, duration: 0.5 }}
-                      whileHover={{ scale: 1.02 }}
+                      transition={{ delay: 0.1, duration: 0.5 }}
                     >
-                      <Image
-                        src="/feather.png"
-                        alt="Add"
-                        width={20}
-                        height={20}
-                      />
-                      Add Your First Resource
-                    </motion.button>
-                  )}
+                      {links.length === 0
+                        ? "Time to Build Your Knowledge Base!"
+                        : "No Matches Found"}
+                    </motion.h3>
+                    <motion.p
+                      className="text-gray-600 text-lg"
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.2, duration: 0.5 }}
+                    >
+                      {links.length === 0
+                        ? "Your Second Brain is ready to grow. Start by adding your favorite articles, videos, or any online resources you want to remember."
+                        : "Try adjusting your search terms or filters to find what you're looking for."}
+                    </motion.p>
+                    {links.length === 0 && (
+                      <motion.button
+                        onClick={() => setIsModalOpen(true)}
+                        className="mt-4 px-6 py-3 bg-orange-400 text-black font-bold rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none inline-flex items-center gap-2"
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.3, duration: 0.5 }}
+                        whileHover={{ scale: 1.02 }}
+                      >
+                        <Image
+                          src="/feather.png"
+                          alt="Add"
+                          width={20}
+                          height={20}
+                        />
+                        Add Your First Resource
+                      </motion.button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </FadeIn>
-          )}
+              </FadeIn>
+            )}
+          </div>
         </div>
 
         <motion.button
@@ -159,6 +199,38 @@ const SecondBrain: React.FC = () => {
                   ×
                 </button>
                 <LinkForm onSubmit={handleSubmit} isLoading={isLoadingLinks} />
+              </div>
+            </FadeIn>
+          </div>
+        )}
+
+        {/* Delete Confirmation Modal */}
+        {deleteModalOpen && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <FadeIn className="w-full max-w-md">
+              <div className="bg-white p-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <h3 className="text-xl font-bold mb-4">Confirm Deletion</h3>
+                <p className="text-gray-600 mb-6">
+                  Are you sure you want to delete this resource? This action
+                  cannot be undone.
+                </p>
+                <div className="flex justify-end gap-4">
+                  <button
+                    onClick={() => {
+                      setDeleteModalOpen(false);
+                      setLinkToDelete(null);
+                    }}
+                    className="px-4 py-2 bg-gray-200 text-black rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleConfirmDelete}
+                    className="px-4 py-2 bg-red-400 text-black rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </FadeIn>
           </div>

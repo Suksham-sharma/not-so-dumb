@@ -3,6 +3,7 @@ import { useState } from "react";
 import axios from "axios";
 
 import { Question } from "@/types/quiz";
+import { toastStyles } from "@/lib/styles";
 
 interface UseQuizSharingProps {
   quizId?: string;
@@ -62,11 +63,13 @@ export const useQuizSharing = ({
       toast.success("Quiz link copied to clipboard!", {
         position: "top-right",
         duration: 2000,
+        className: toastStyles.success,
       });
     } catch (err) {
       toast.error("Failed to share quiz", {
         position: "top-right",
         duration: 2000,
+        className: toastStyles.error,
       });
       console.error("Share error:", err);
     } finally {

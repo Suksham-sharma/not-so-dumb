@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useTags } from "@/hooks/useTags";
 import { toast } from "sonner";
 import Image from "next/image";
+import { toastStyles } from "@/lib/styles";
 
 interface FormValues {
   url: string;
@@ -72,7 +73,10 @@ const FormSectionComponent: React.FC<FormSectionProps> = ({
           }
         } catch (error) {
           toast.error(
-            error instanceof Error ? error.message : "Failed to add tag"
+            error instanceof Error ? error.message : "Failed to add tag",
+            {
+              className: toastStyles.error,
+            }
           );
         }
       }

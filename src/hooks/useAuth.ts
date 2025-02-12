@@ -1,6 +1,7 @@
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { authService, LoginFormData } from "@/services/auth";
+import { toastStyles } from "@/lib/styles";
 
 export interface SignupFormData {
   email: string;
@@ -16,10 +17,14 @@ export const useAuth = () => {
       const { token, user } = await authService.login(data);
       authService.saveAuthData(token, user);
       document.cookie = `token=${token}; path=/; max-age=604800`; // 7 days
-      toast.success("Login successful!");
+      toast.success("Login successful!", {
+        className: toastStyles.success,
+      });
       router.push("/quiz");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Login failed");
+      toast.error(error instanceof Error ? error.message : "Login failed", {
+        className: toastStyles.error,
+      });
       throw error;
     }
   };
@@ -29,10 +34,14 @@ export const useAuth = () => {
       const { token, user } = await authService.signup(data);
       authService.saveAuthData(token, user);
       document.cookie = `token=${token}; path=/; max-age=604800`;
-      toast.success("Account created successfully!");
+      toast.success("Account created successfully!", {
+        className: toastStyles.success,
+      });
       router.push("/quiz");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Signup failed");
+      toast.error(error instanceof Error ? error.message : "Signup failed", {
+        className: toastStyles.error,
+      });
       throw error;
     }
   };

@@ -9,6 +9,7 @@ import QuizResults from "./QuizResults";
 import QuizReview from "./QuizReview";
 import { useQuizStore } from "@/store/quiz";
 import Timer from "./Timer";
+import { toastStyles } from "@/lib/styles";
 
 interface Question {
   id: number;
@@ -112,6 +113,7 @@ const TestScreen: React.FC<TestScreenProps> = ({
     toast.success(
       `Quiz submitted successfully! Score: ${correctAnswers}/${questions.length}`,
       {
+        className: toastStyles.success,
         position: "top-right",
         duration: 2000,
       }

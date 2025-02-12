@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { extractArticleContent } from "@/services/article";
 import { fetchTranscript } from "@/services/youtube";
+import { toastStyles } from "@/lib/styles";
 
 interface QuizConfig {
   numQuestions: number;
@@ -35,18 +36,24 @@ export const useQuizGeneration = () => {
       if (config.sources.youtubeLink) {
         const transcript = await fetchTranscript(config.sources.youtubeLink);
         content = truncateContent(transcript.join(" "));
-        toast.success("Successfully fetched YouTube content");
+        toast.success("Successfully fetched YouTube content", {
+          className: toastStyles.success,
+        });
       } else if (config.sources.articleLink) {
         content = truncateContent(
           await extractArticleContent(config.sources.articleLink)
         );
-        toast.success("Successfully fetched article content");
+        toast.success("Successfully fetched article content", {
+          className: toastStyles.success,
+        });
       }
       return content;
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to fetch content";
-      toast.error(errorMessage);
+      toast.error(errorMessage, {
+        className: toastStyles.error,
+      });
       throw new Error(errorMessage);
     } finally {
       setIsContentLoading(false);
@@ -70,13 +77,17 @@ export const useQuizGeneration = () => {
 
       console.log("Response of quiz generation ", response);
 
-      toast.success("Quiz generated successfully!");
+      toast.success("Quiz generated successfully!", {
+        className: toastStyles.success,
+      });
       return response.data;
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to generate quiz";
       setError(errorMessage);
-      toast.error(errorMessage);
+      toast.error(errorMessage, {
+        className: toastStyles.error,
+      });
       return [];
     } finally {
       setIsLoading(false);

@@ -70,3 +70,49 @@ export async function GET(request: Request) {
     );
   }
 }
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+    const userId = request.headers.get("x-user-id");
+
+    if (!userId) {
+      return NextResponse.json({ error: "User ID not found" }, { status: 401 });
+    }
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Resource ID not found" },
+        { status: 400 }
+      );
+    }
+
+    const resource = await prisma.resource.findFirst({
+      where: {
+        id,
+        userId,
+      },
+    });
+
+    if (!resource) {
+      return NextResponse.json(
+        { error: "Resource not found or unauthorized" },
+        { status: 404 }
+      );
+    }
+
+    // Delete the resource
+    await prisma.resource.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error deleting resource:", error);
+    return NextResponse.json(
+      { error: "Failed to delete resource" },
+      { status: 500 }
+    );
+  }
+}

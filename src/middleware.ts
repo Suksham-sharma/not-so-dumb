@@ -4,7 +4,6 @@ import { jwtVerify } from "jose";
 
 export async function middleware(request: NextRequest) {
   let token: string | undefined;
-  console.log("Starting Request");
 
   const authHeader = request.headers.get("Authorization");
   if (authHeader?.startsWith("Bearer ")) {
@@ -15,8 +14,6 @@ export async function middleware(request: NextRequest) {
     const tokenFromCookie = request.cookies.get("token");
     token = tokenFromCookie?.value;
   }
-
-  console.log("Token", token);
 
   const protectedPaths = [
     "/home",
@@ -38,8 +35,6 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  console.log("Pathname", request.nextUrl.pathname);
-
   if (!isProtectedPath) {
     return NextResponse.next();
   }
@@ -48,19 +43,15 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  console.log("Token 2", token);
-
   try {
     const { payload } = await jwtVerify(
       token,
       new TextEncoder().encode(process.env.JWT_SECRET || "fallback-secret")
     );
 
-    console.log("Payload", payload);
     const response = NextResponse.next();
 
     response.headers.set("x-user-id", payload.userId as string);
-    console.log("Response", response);
     return response;
   } catch (error) {
     return NextResponse.redirect(new URL("/login", request.url));
@@ -71,6 +62,8 @@ export const config = {
   matcher: [
     "/quiz/:path*",
     "/profile/:path*",
+    "/api/resources/:path*",
+    "/api/tags/:path*",
     "/api/:path*",
     "/home/:path*",
     "/second-brain/:path*",
