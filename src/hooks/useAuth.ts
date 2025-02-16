@@ -2,6 +2,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { authService, LoginFormData } from "@/services/auth";
 import { toastStyles } from "@/lib/styles";
+import axios from "axios";
 
 export interface SignupFormData {
   email: string;
@@ -16,16 +17,23 @@ export const useAuth = () => {
     try {
       const { token, user } = await authService.login(data);
       authService.saveAuthData(token, user);
-      document.cookie = `token=${token}; path=/; max-age=604800`; // 7 days
+      document.cookie = `token=${token}; path=/; max-age=604800`;
       toast.success("Login successful!", {
         className: toastStyles.success,
       });
       router.push("/quiz");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Login failed", {
+      const errorMessage = axios.isAxiosError(error)
+        ? error.response?.data?.message ||
+          error.response?.data?.error ||
+          "An error occurred during login"
+        : error instanceof Error
+        ? error.message
+        : "An unexpected error occurred during login";
+
+      toast.error(errorMessage, {
         className: toastStyles.error,
       });
-      throw error;
     }
   };
 
@@ -39,7 +47,15 @@ export const useAuth = () => {
       });
       router.push("/quiz");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Signup failed", {
+      const errorMessage = axios.isAxiosError(error)
+        ? error.response?.data?.message ||
+          error.response?.data?.error ||
+          "An error occurred during signup"
+        : error instanceof Error
+        ? error.message
+        : "An unexpected error occurred during signup";
+
+      toast.error(errorMessage, {
         className: toastStyles.error,
       });
       throw error;

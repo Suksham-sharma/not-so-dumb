@@ -37,7 +37,7 @@ export const authService = {
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        throw new Error(error.response?.data?.message || "Login failed");
+        throw new Error(error.response?.data?.error || "Login failed");
       }
       throw error;
     }

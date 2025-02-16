@@ -13,7 +13,7 @@ export async function POST(request: Request) {
 
     if (!user) {
       return NextResponse.json(
-        { error: "Invalid email or password" },
+        { error: "Account not found. Please check your email or sign up." },
         { status: 401 }
       );
     }
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
 
     if (!isValidPassword) {
       return NextResponse.json(
-        { error: "Invalid email or password" },
+        { error: "Incorrect password. Please try again." },
         { status: 401 }
       );
     }
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Server error occurred. Please try again later." },
       { status: 500 }
     );
   }
