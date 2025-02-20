@@ -18,9 +18,9 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
     <div className="relative">
       <button
         onClick={onToggleDropdown}
-        className="w-10 h-10 rounded-full bg-blue-300 border-2 border-black flex items-center justify-center text-xl md:text-2xl"
+        className="w-10 h-10 rounded-full bg-blue-300 border-2 border-black flex items-center justify-center text-xl md:text-2xl "
       >
-        <span className="md:hidden">☰</span>
+        <span className="md:hidden pb-0.5">☰</span>
         <span className="hidden md:inline">👤</span>
       </button>
       {showDropdown && (
