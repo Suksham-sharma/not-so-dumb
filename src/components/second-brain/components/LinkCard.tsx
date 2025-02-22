@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 
 interface Link {
   id?: string;
-  url: string;
+  url?: string;
   title: string;
   tags: string[];
   image?: string;

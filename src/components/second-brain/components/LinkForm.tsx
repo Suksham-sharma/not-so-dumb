@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { usePreviewData } from "@/hooks/usePreviewData";
 import { FormSection } from "./form/FormSection";
 import { PreviewSection } from "./form/PreviewSection";
-import { useLinksStore } from "@/store/links";
+import { useResourceStore } from "@/store/resource";
 import { toast } from "sonner";
 import { toastStyles } from "@/lib/styles";
 
@@ -17,7 +17,7 @@ const LinkForm: React.FC<LinkFormProps> = ({
   onSubmit,
   isLoading: parentIsLoading,
 }) => {
-  const { addLink, isLoading: isSaving } = useLinksStore();
+  const { addResource, isLoading: isSaving } = useResourceStore();
   const [formData, setFormData] = React.useState({
     url: "",
     title: "",
@@ -33,8 +33,9 @@ const LinkForm: React.FC<LinkFormProps> = ({
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await addLink({
+      await addResource({
         url: formData.url,
+        type: "link",
         title: formData.title,
         tags: formData.tags.filter((tag) => tag !== ""),
         image: preview?.image ?? undefined,

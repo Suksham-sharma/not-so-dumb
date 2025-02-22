@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useLinksStore } from "@/store/links";
+import { useResourceStore } from "@/store/resource";
 import { toast } from "sonner";
 import { toastStyles } from "@/lib/styles";
 
@@ -7,12 +7,12 @@ type FormType = "link" | "note" | null;
 
 export const useSecondBrain = () => {
   const {
-    links,
-    isLoading: isLoadingLinks,
-    error: linksError,
-    fetchLinks,
-    deleteLink,
-  } = useLinksStore();
+    resources,
+    isLoading: isLoadingResources,
+    error: resourcesError,
+    fetchResources,
+    deleteResource,
+  } = useResourceStore();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
@@ -35,7 +35,7 @@ export const useSecondBrain = () => {
   const handleConfirmDelete = async () => {
     if (!linkToDelete) return;
     try {
-      await deleteLink(linkToDelete);
+      await deleteResource(linkToDelete);
       toast.success("Resource deleted successfully", {
         className: toastStyles.success,
         duration: 3000,
@@ -56,34 +56,33 @@ export const useSecondBrain = () => {
 
   const availableTags = useMemo(() => {
     const tagSet = new Set<string>();
-    links?.forEach((link) => {
-      link.tags.forEach((tag) => tagSet.add(tag));
+    resources?.forEach((resource) => {
+      resource.tags.forEach((tag) => tagSet.add(tag));
     });
     return Array.from(tagSet);
-  }, [links]);
+  }, [resources]);
 
-  const filteredLinks = useMemo(() => {
-    return links.filter((link) => {
+  const filteredResources = useMemo(() => {
+    return resources.filter((resource) => {
       const matchesSearch = searchTerm
-        ? link.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          link.url.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          link.tags.some((tag) =>
+        ? resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          resource.tags.some((tag) =>
             tag.toLowerCase().includes(searchTerm.toLowerCase())
           )
         : true;
 
       const matchesTag = selectedTag
-        ? link.tags.some((tag) => tag === selectedTag)
+        ? resource.tags.some((tag) => tag === selectedTag)
         : true;
 
       return matchesSearch && matchesTag;
     });
-  }, [links, searchTerm, selectedTag]);
+  }, [resources, searchTerm, selectedTag]);
 
   return {
-    links,
-    isLoadingLinks,
-    linksError,
+    resources,
+    isLoadingResources,
+    resourcesError,
     searchTerm,
     setSearchTerm,
     selectedTag,
@@ -95,10 +94,12 @@ export const useSecondBrain = () => {
     selectedForm,
     setSelectedForm,
     deleteModalOpen,
+    setDeleteModalOpen,
+    setLinkToDelete,
     handleDeleteClick,
     handleConfirmDelete,
     handleSubmit,
     availableTags,
-    filteredLinks,
+    filteredResources,
   };
 };

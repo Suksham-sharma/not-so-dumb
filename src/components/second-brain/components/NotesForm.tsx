@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
-import { useLinksStore } from "@/store/links";
+import { useResourceStore } from "@/store/resource";
 import { FormSection } from "./form/NotesFormSection";
 import { PreviewSection } from "./form/NotesPreviewSection";
 
@@ -14,7 +14,7 @@ const NotesForm: React.FC<NotesFormProps> = ({
   onSubmit,
   isLoading: parentIsLoading,
 }) => {
-  const { addLink, isLoading: isSaving } = useLinksStore();
+  const { addResource, isLoading: isSaving } = useResourceStore();
   const [formData, setFormData] = React.useState({
     title: "",
     content: "",

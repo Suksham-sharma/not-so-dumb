@@ -7,10 +7,8 @@ import LinkCard from "./components/LinkCard";
 import SearchFilter from "./components/SearchFilter";
 import Image from "next/image";
 import { FadeIn } from "@/components/ui/motion";
-import { useLinksStore } from "@/store/links";
+import { useSecondBrain } from "@/hooks/useSecondBrain";
 import LinkCardSkeleton from "./components/LinkCardSkeleton";
-import { toast } from "sonner";
-import { toastStyles } from "@/lib/styles";
 
 type FormType = "link" | "note" | null;
 
@@ -84,20 +82,26 @@ const EmptyState = ({
 
 const SecondBrain: React.FC = () => {
   const {
-    links,
-    isLoading: isLoadingLinks,
-    error: linksError,
-    fetchLinks,
-    deleteLink,
-  } = useLinksStore();
-
-  const [searchTerm, setSearchTerm] = React.useState("");
-  const [selectedTag, setSelectedTag] = React.useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [isChoiceModalOpen, setIsChoiceModalOpen] = React.useState(false);
-  const [selectedForm, setSelectedForm] = React.useState<FormType>(null);
-  const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
-  const [linkToDelete, setLinkToDelete] = React.useState<string | null>(null);
+    resources,
+    isLoadingResources,
+    setSearchTerm,
+    selectedTag,
+    setSelectedTag,
+    isModalOpen,
+    setIsModalOpen,
+    isChoiceModalOpen,
+    setIsChoiceModalOpen,
+    selectedForm,
+    setSelectedForm,
+    deleteModalOpen,
+    setDeleteModalOpen,
+    setLinkToDelete,
+    handleDeleteClick,
+    handleConfirmDelete,
+    handleSubmit,
+    availableTags,
+    filteredResources,
+  } = useSecondBrain();
 
   const modalRef = React.useRef<HTMLDivElement>(null);
 
@@ -120,68 +124,6 @@ const SecondBrain: React.FC = () => {
     };
   }, [isChoiceModalOpen]);
 
-  useEffect(() => {
-    fetchLinks();
-  }, [fetchLinks]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsModalOpen(false);
-  };
-
-  const handleDeleteClick = (id: string) => {
-    setLinkToDelete(id);
-    setDeleteModalOpen(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!linkToDelete) return;
-    try {
-      await deleteLink(linkToDelete);
-      toast.success("Resource deleted successfully", {
-        className: toastStyles.success,
-        duration: 3000,
-        position: "bottom-right",
-      });
-    } catch (error) {
-      console.error("Error deleting resource:", error);
-      toast.error("Failed to delete resource", {
-        className: toastStyles.error,
-        duration: 3000,
-        position: "bottom-right",
-      });
-    } finally {
-      setDeleteModalOpen(false);
-      setLinkToDelete(null);
-    }
-  };
-
-  const availableTags = React.useMemo(() => {
-    const tagSet = new Set<string>();
-    links?.forEach((link) => {
-      link.tags.forEach((tag) => tagSet.add(tag));
-    });
-    return Array.from(tagSet);
-  }, [links]);
-
-  const filteredLinks = React.useMemo(() => {
-    return links.filter((link) => {
-      const matchesSearch = searchTerm
-        ? link.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          link.url.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          link.tags.some((tag) =>
-            tag.toLowerCase().includes(searchTerm.toLowerCase())
-          )
-        : true;
-
-      const matchesTag = selectedTag
-        ? link.tags.some((tag) => tag === selectedTag)
-        : true;
-
-      return matchesSearch && matchesTag;
-    });
-  }, [links, searchTerm, selectedTag]);
-
   return (
     <div className="min-h-screen relative overflow-hidden p-8 bg-gradient-to-br from-orange-50 to-blue-50 pt-4 md:pt-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -195,20 +137,20 @@ const SecondBrain: React.FC = () => {
             selectedTag={selectedTag}
           />
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {isLoadingLinks ? (
+            {isLoadingResources ? (
               [...Array(3)].map((_, index) => <LinkCardSkeleton key={index} />)
-            ) : filteredLinks.length > 0 ? (
-              filteredLinks.map((link) => (
+            ) : filteredResources.length > 0 ? (
+              filteredResources.map((resource) => (
                 <LinkCard
-                  key={link.id}
-                  link={link}
+                  key={resource.id}
+                  link={resource}
                   onDeleteClick={handleDeleteClick}
                 />
               ))
             ) : (
               <EmptyState
                 onAddClick={() => setIsChoiceModalOpen(true)}
-                isEmpty={links.length === 0}
+                isEmpty={resources.length === 0}
               />
             )}
           </div>
@@ -275,12 +217,12 @@ const SecondBrain: React.FC = () => {
                 {selectedForm === "link" ? (
                   <LinkForm
                     onSubmit={handleSubmit}
-                    isLoading={isLoadingLinks}
+                    isLoading={isLoadingResources}
                   />
                 ) : (
                   <NotesForm
                     onSubmit={handleSubmit}
-                    isLoading={isLoadingLinks}
+                    isLoading={isLoadingResources}
                   />
                 )}
               </div>
