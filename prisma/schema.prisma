@@ -46,9 +46,12 @@ model Tag {
 
 model Resource {
     id        String   @id @default(cuid())
-    url       String
+    type      String   @default("link")
+    url       String?
     title     String
+    content   String?
     image     String?
+    pattern   Json?
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     userId    String

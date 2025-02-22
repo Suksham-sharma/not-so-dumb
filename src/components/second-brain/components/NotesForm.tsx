@@ -2,8 +2,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useLinksStore } from "@/store/links";
-import { toast } from "sonner";
-import { toastStyles } from "@/lib/styles";
 import { FormSection } from "./form/NotesFormSection";
 import { PreviewSection } from "./form/NotesPreviewSection";
 

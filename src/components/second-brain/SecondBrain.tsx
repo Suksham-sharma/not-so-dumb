@@ -91,10 +91,6 @@ const SecondBrain: React.FC = () => {
     deleteLink,
   } = useLinksStore();
 
-  useEffect(() => {
-    fetchLinks();
-  }, [fetchLinks]);
-
   const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedTag, setSelectedTag] = React.useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -102,6 +98,31 @@ const SecondBrain: React.FC = () => {
   const [selectedForm, setSelectedForm] = React.useState<FormType>(null);
   const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
   const [linkToDelete, setLinkToDelete] = React.useState<string | null>(null);
+
+  const modalRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        setIsChoiceModalOpen(false);
+      }
+    };
+
+    if (isChoiceModalOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isChoiceModalOpen]);
+
+  useEffect(() => {
+    fetchLinks();
+  }, [fetchLinks]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -204,7 +225,10 @@ const SecondBrain: React.FC = () => {
           </motion.button>
 
           {isChoiceModalOpen && (
-            <div className="fixed bottom-28 right-8 bg-white p-4 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-50">
+            <div
+              ref={modalRef}
+              className="fixed bottom-28 right-8 bg-white p-4 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-50"
+            >
               <div className="flex flex-col gap-3">
                 <button
                   onClick={() => {
