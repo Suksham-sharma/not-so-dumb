@@ -4,6 +4,9 @@ import { motion } from "framer-motion";
 import { useResourceStore } from "@/store/resource";
 import { FormSection } from "./form/NotesFormSection";
 import { PreviewSection } from "./form/NotesPreviewSection";
+import { toast } from "sonner";
+import { toastStyles } from "@/lib/styles";
+import { generateNeoBrutalistPattern } from "@/lib/utils/pattern";
 
 interface NotesFormProps {
   onSubmit: (e: React.FormEvent) => void;
@@ -23,6 +26,35 @@ const NotesForm: React.FC<NotesFormProps> = ({
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.title.trim() || !formData.content.trim()) {
+      toast.error("Title and content are required", {
+        className: toastStyles.error,
+      });
+      return;
+    }
+
+    try {
+      await addResource({
+        type: "note",
+        title: formData.title.trim(),
+        content: formData.content.trim(),
+        tags: formData.tags.filter((tag) => tag.trim() !== ""),
+        pattern: generateNeoBrutalistPattern(formData.title.trim()),
+      });
+      setFormData({ title: "", content: "", tags: [] });
+      onSubmit(e);
+      toast.success("Note saved successfully", {
+        className: toastStyles.success,
+      });
+    } catch (error) {
+      console.error("Error saving note:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to save note",
+        {
+          className: toastStyles.error,
+        }
+      );
+    }
   };
 
   return (

@@ -3,20 +3,37 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(request: Request) {
   try {
-    const { url, title, tags, image } = await request.json();
-    console.log("Request Body:", { url, title, tags });
+    const { type = "link", url, title, tags, image, content, pattern } = await request.json();
+    console.log("Request Body:", { type, url, title, tags, content });
     const userId = request.headers.get("x-user-id");
 
     if (!userId) {
       return NextResponse.json({ error: "User ID not found" }, { status: 401 });
     }
 
+    if (type !== "link" && type !== "note") {
+      return NextResponse.json(
+        { error: "Invalid resource type. Must be 'link' or 'note'" },
+        { status: 400 }
+      );
+    }
+
+    if (type === "link" && !url) {
+      return NextResponse.json(
+        { error: "URL is required for link type resources" },
+        { status: 400 }
+      );
+    }
+
     const resource = await prisma.resource.create({
       data: {
+        type,
         url,
         title,
         userId,
         image,
+        content,
+        pattern,
         tags: {
           connect: tags.map((tag: string) => ({
             name: tag,

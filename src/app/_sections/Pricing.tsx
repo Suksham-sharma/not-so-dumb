@@ -7,7 +7,7 @@ export default function Pricing() {
         <h2 className="mb-14 text-center text-2xl font-heading md:text-3xl lg:mb-20 lg:text-4xl">
           Choose Your AI Plan
         </h2>
-        <div className="grid grid-cols-3 gap-8 w900:mx-auto w900:w-2/3 w900:grid-cols-1 w500:w-full">
+        <div className="grid grid-cols-1 gap-8 mx-auto w-full md:w-2/3 lg:w-full lg:grid-cols-3 max-w-7xl">
           <PricingPlan
             planName="Starter"
             description="Perfect for students and individual researchers"

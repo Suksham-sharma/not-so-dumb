@@ -35,15 +35,17 @@ export default function Features() {
           Advanced AI Research & Quiz Generation Platform
         </h2>
 
-        <div className="mx-auto grid w-container max-w-full grid-cols-1 gap-5 px-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mx-auto grid w-container max-w-full grid-cols-2 gap-3 px-3 lg:grid-cols-3 lg:gap-5 lg:px-5">
           {features.map((feature, i) => {
             return (
               <div
-                className="border-border dark:border-darkBorder shadow-light dark:shadow-dark flex flex-col gap-3 rounded-base border-2 bg-white p-5"
+                className="border-border dark:border-darkBorder shadow-light dark:shadow-dark flex flex-col gap-3 rounded-base border-2 bg-white p-2 sm:p-3 md:p-5"
                 key={i}
               >
-                <h4 className="text-xl font-heading">{feature.title}</h4>
-                <p>{feature.text}</p>
+                <h4 className="text-lg sm:text-xl font-heading">
+                  {feature.title}
+                </h4>
+                <p className="text-sm sm:text-md">{feature.text}</p>
               </div>
             );
           })}

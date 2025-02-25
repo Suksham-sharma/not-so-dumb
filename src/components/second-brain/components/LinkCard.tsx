@@ -5,29 +5,43 @@ import { Tag, Link as LinkIcon, Trash2 } from "lucide-react";
 import { FadeIn } from "@/components/ui/motion";
 import { motion } from "framer-motion";
 
-interface Link {
+interface Resource {
   id?: string;
+  type: string;
   url?: string;
   title: string;
   tags: string[];
   image?: string;
+  content?: string;
+  pattern?: {
+    shapes: Array<{
+      color: string;
+      top: string;
+      left: string;
+      size: string;
+      rotation: string;
+    }>;
+    backgroundColor: string;
+  };
 }
 
-interface LinkCardProps {
-  link: Link;
+interface ResourceCardProps {
+  resource: Resource;
   onDeleteClick: (id: string) => void;
 }
 
-const LinkCard: React.FC<LinkCardProps> = ({ link, onDeleteClick }) => {
+const ResourceCard: React.FC<ResourceCardProps> = ({ resource, onDeleteClick }) => {
   const handleClick = (e: React.MouseEvent) => {
     if (e.defaultPrevented) return;
-    window.open(link.url, "_blank", "noopener,noreferrer");
+    if (resource.type === "link" && resource.url) {
+      window.open(resource.url, "_blank", "noopener,noreferrer");
+    }
   };
 
   const handleDelete = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (!link.id) return;
-    onDeleteClick(link.id);
+    if (!resource.id) return;
+    onDeleteClick(resource.id);
   };
 
   return (
@@ -46,16 +60,40 @@ const LinkCard: React.FC<LinkCardProps> = ({ link, onDeleteClick }) => {
 
         <div className="flex-1 flex flex-col">
           <div className="relative h-48 mb-6 flex-shrink-0 overflow-hidden rounded-lg border-2 border-black">
-            {link.image ? (
-              <Image
-                src={link.image}
-                alt={link.title}
-                fill
-                className="object-cover transition-transform duration-300 group-hover:scale-105"
-              />
+            {resource.type === "link" ? (
+              resource.image ? (
+                <Image
+                  src={resource.image}
+                  alt={resource.title}
+                  fill
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              ) : (
+                <div className="h-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                  <LinkIcon size={48} className="text-blue-400" />
+                </div>
+              )
             ) : (
-              <div className="h-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
-                <LinkIcon size={48} className="text-blue-400" />
+              <div
+                className="h-full relative overflow-hidden"
+                style={{ backgroundColor: resource.pattern?.backgroundColor || "#FFE5E5" }}
+              >
+                {resource.pattern?.shapes.map((shape, index) => (
+                  <div
+                    key={index}
+                    className="absolute transform transition-all duration-700 ease-in-out group-hover:scale-110 group-hover:rotate-12 rounded-lg"
+                    style={{
+                      top: shape.top,
+                      left: shape.left,
+                      width: shape.size,
+                      height: shape.size,
+                      backgroundColor: shape.color,
+                      transform: `rotate(${shape.rotation}) translateZ(0)`,
+                      opacity: 0.85,
+                      backdropFilter: "blur(2px)",
+                    }}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -63,14 +101,14 @@ const LinkCard: React.FC<LinkCardProps> = ({ link, onDeleteClick }) => {
           {/* Content Section */}
           <div className="flex-1 flex flex-col justify-between space-y-4">
             <h3 className="font-bold text-md line-clamp-1 group-hover:text-blue-600 transition-colors">
-              {link.title}
+              {resource.title}
             </h3>
 
             {/* Tags Section */}
             <div className="overflow-x-auto no-scrollbar pt-2 border-t-2 border-black/10">
               <div className="flex gap-2 pb-2 min-w-fit">
-                {link.tags.length > 0 ? (
-                  link.tags.map((tag, index) => (
+                {resource.tags.length > 0 ? (
+                  resource.tags.map((tag, index) => (
                     <span
                       key={index}
                       className="inline-flex flex-shrink-0 items-center gap-1 px-3 py-1.5 text-sm font-bold rounded-md border-2 border-black transition-all hover:translate-y-[-2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden"
@@ -100,4 +138,4 @@ const LinkCard: React.FC<LinkCardProps> = ({ link, onDeleteClick }) => {
   );
 };
 
-export default LinkCard;
+export default ResourceCard;

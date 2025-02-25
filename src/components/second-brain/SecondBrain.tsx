@@ -143,7 +143,7 @@ const SecondBrain: React.FC = () => {
               filteredResources.map((resource) => (
                 <LinkCard
                   key={resource.id}
-                  link={resource}
+                  resource={resource}
                   onDeleteClick={handleDeleteClick}
                 />
               ))

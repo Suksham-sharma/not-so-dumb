@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { FileText } from "lucide-react";
+import { generateNeoBrutalistPattern } from "@/lib/utils/pattern";
 
 interface Pattern {
   color: string;
@@ -22,36 +23,6 @@ interface PreviewSectionProps {
   savedPattern?: SavedPattern;
 }
 
-const generateNeoBrutalistPattern = () => {
-  const colors = [
-    "#FF6B6B",
-    "#4ECDC4",
-    "#45B7D1",
-    "#96CEB4",
-    "#FFEEAD",
-    "#FFD93D",
-  ];
-  const bgColors = [
-    "#FFE5E5",
-    "#E8F6F6",
-    "#E5F0F5",
-    "#EDF4F0",
-    "#FFF9E6",
-    "#FFF5CC",
-  ];
-  const shapes = Array.from({ length: 5 }, () => ({
-    color: colors[Math.floor(Math.random() * colors.length)],
-    top: `${Math.random() * 100}%`,
-    left: `${Math.random() * 100}%`,
-    size: `${30 + Math.random() * 70}px`,
-    rotation: `${Math.random() * 360}deg`,
-  }));
-  return {
-    shapes,
-    backgroundColor: bgColors[Math.floor(Math.random() * bgColors.length)],
-  };
-};
-
 interface GeneratedPattern {
   shapes: Pattern[];
   backgroundColor: string;
@@ -67,10 +38,10 @@ export const PreviewSection: React.FC<PreviewSectionProps> = ({
     if (savedPattern) {
       return {
         shapes: savedPattern.shapes,
-        backgroundColor: savedPattern.backgroundColor
+        backgroundColor: savedPattern.backgroundColor,
       };
     }
-    return generateNeoBrutalistPattern();
+    return generateNeoBrutalistPattern(title);
   });
 
   if (!content && !title) {

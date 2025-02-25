@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useResourceStore } from "@/store/resource";
 import { toast } from "sonner";
 import { toastStyles } from "@/lib/styles";
@@ -13,6 +13,10 @@ export const useSecondBrain = () => {
     fetchResources,
     deleteResource,
   } = useResourceStore();
+
+  useEffect(() => {
+    fetchResources();
+  }, [fetchResources]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
@@ -63,6 +67,7 @@ export const useSecondBrain = () => {
   }, [resources]);
 
   const filteredResources = useMemo(() => {
+    console.log("resources", resources);
     return resources.filter((resource) => {
       const matchesSearch = searchTerm
         ? resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

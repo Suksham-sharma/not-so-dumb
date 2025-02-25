@@ -44,6 +44,7 @@ export const useResourceStore = create<ResourceState>((set) => ({
   addResource: async (resource) => {
     set({ isLoading: true, error: null });
     try {
+      console.log("Resource Notes", resource);
       const tags = Array.isArray(resource.tags)
         ? resource.tags.filter((tag) => tag !== "")
         : [];
