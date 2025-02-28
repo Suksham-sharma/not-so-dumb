@@ -36,12 +36,12 @@ model Question {
 }
 
 model Tag {
-    id         String    @id @default(cuid())
-    name       String    @unique
-    Resource   Resource? @relation(fields: [resourceId], references: [id])
-    resourceId String?
+    id         String     @id @default(cuid())
+    name       String     @unique
     userId     String
-    User       User      @relation(fields: [userId], references: [id])
+    User       User       @relation(fields: [userId], references: [id])
+    resources  Resource[]
+    resourceId String?
 }
 
 model Resource {

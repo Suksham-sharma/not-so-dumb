@@ -1,9 +1,10 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Tag, Link as LinkIcon, Trash2 } from "lucide-react";
 import { FadeIn } from "@/components/ui/motion";
 import { motion } from "framer-motion";
+import NoteDisplay from "./NoteDisplay";
 
 interface Resource {
   id?: string;
@@ -30,11 +31,18 @@ interface ResourceCardProps {
   onDeleteClick: (id: string) => void;
 }
 
-const ResourceCard: React.FC<ResourceCardProps> = ({ resource, onDeleteClick }) => {
+const ResourceCard: React.FC<ResourceCardProps> = ({
+  resource,
+  onDeleteClick,
+}) => {
+  const [isNoteOpen, setIsNoteOpen] = useState(false);
+
   const handleClick = (e: React.MouseEvent) => {
     if (e.defaultPrevented) return;
     if (resource.type === "link" && resource.url) {
       window.open(resource.url, "_blank", "noopener,noreferrer");
+    } else if (resource.type === "note") {
+      setIsNoteOpen(true);
     }
   };
 
@@ -76,7 +84,10 @@ const ResourceCard: React.FC<ResourceCardProps> = ({ resource, onDeleteClick }) 
             ) : (
               <div
                 className="h-full relative overflow-hidden"
-                style={{ backgroundColor: resource.pattern?.backgroundColor || "#FFE5E5" }}
+                style={{
+                  backgroundColor:
+                    resource.pattern?.backgroundColor || "#FFE5E5",
+                }}
               >
                 {resource.pattern?.shapes.map((shape, index) => (
                   <div
@@ -134,6 +145,17 @@ const ResourceCard: React.FC<ResourceCardProps> = ({ resource, onDeleteClick }) 
           </div>
         </div>
       </motion.div>
+
+      {/* Full Screen Note View */}
+      {isNoteOpen && (
+        <NoteDisplay
+          title={resource.title}
+          content={resource.content}
+          tags={resource.tags}
+          pattern={resource.pattern}
+          onClose={() => setIsNoteOpen(false)}
+        />
+      )}
     </FadeIn>
   );
 };

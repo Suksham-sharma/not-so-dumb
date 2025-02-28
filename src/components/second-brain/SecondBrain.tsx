@@ -3,12 +3,12 @@ import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import LinkForm from "./components/LinkForm";
 import NotesForm from "./components/NotesForm";
-import LinkCard from "./components/LinkCard";
+import LinkCard from "./components/ResourceCard";
 import SearchFilter from "./components/SearchFilter";
 import Image from "next/image";
 import { FadeIn } from "@/components/ui/motion";
 import { useSecondBrain } from "@/hooks/useSecondBrain";
-import LinkCardSkeleton from "./components/LinkCardSkeleton";
+import LinkCardSkeleton from "./components/ResourceSkeleton";
 
 type FormType = "link" | "note" | null;
 

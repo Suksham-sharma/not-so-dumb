@@ -34,7 +34,7 @@ export const PreviewSection: React.FC<PreviewSectionProps> = ({
   tags,
   savedPattern,
 }) => {
-  const [pattern] = React.useState<GeneratedPattern>(() => {
+  const pattern = React.useMemo(() => {
     if (savedPattern) {
       return {
         shapes: savedPattern.shapes,
@@ -42,7 +42,7 @@ export const PreviewSection: React.FC<PreviewSectionProps> = ({
       };
     }
     return generateNeoBrutalistPattern(title);
-  });
+  }, [savedPattern, title]);
 
   if (!content && !title) {
     return (

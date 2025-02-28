@@ -1,5 +1,5 @@
 "use client";
-import React, { memo, useState } from "react";
+import React, { memo, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useTags } from "@/hooks/useTags";
 import { toast } from "sonner";
@@ -25,13 +25,32 @@ const FormSectionComponent: React.FC<FormSectionProps> = ({
   setNewNote,
   isLoading,
 }) => {
-  const { register, handleSubmit } = useForm<FormValues>({
+  const { register, handleSubmit, watch } = useForm<FormValues>({
     defaultValues: newNote,
   });
 
-  const [tags, setTags] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>(newNote.tags);
   const [inputTag, setInputTag] = useState("");
   const { addTag, fetchSuggestions, suggestions } = useTags();
+
+  // Watch for form changes and update parent state
+  useEffect(() => {
+    const subscription = watch((value) => {
+      if (value.title !== undefined || value.content !== undefined) {
+        setNewNote(prev => ({
+          ...prev,
+          title: value.title || prev.title,
+          content: value.content || prev.content
+        }));
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, setNewNote]);
+
+  // Sync tags with parent component's tags
+  useEffect(() => {
+    setTags(newNote.tags);
+  }, [newNote.tags]);
 
   const handleTagInput = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && inputTag.trim()) {
