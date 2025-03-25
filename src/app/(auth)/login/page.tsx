@@ -34,6 +34,7 @@ export default function LoginPage() {
       await login(data);
     } catch (error) {
       console.error("Login failed:", error);
+      // Error is already handled by useAuth hook with toast
     }
   };
 
@@ -51,6 +52,7 @@ export default function LoginPage() {
           error={errors.email?.message}
           register={register}
           name="email"
+          disabled={isSubmitting}
         />
 
         <FormInput
@@ -61,6 +63,7 @@ export default function LoginPage() {
           error={errors.password?.message}
           register={register}
           name="password"
+          disabled={isSubmitting}
         />
 
         <div className="flex items-center justify-between text-sm">

@@ -21,7 +21,8 @@ export const useAuth = () => {
       toast.success("Login successful!", {
         className: toastStyles.success,
       });
-      router.push("/quiz");
+      await router.push("/quiz");
+      router.refresh();
     } catch (error) {
       const errorMessage = axios.isAxiosError(error)
         ? error.response?.data?.message ||
@@ -34,6 +35,7 @@ export const useAuth = () => {
       toast.error(errorMessage, {
         className: toastStyles.error,
       });
+      throw error;
     }
   };
 
