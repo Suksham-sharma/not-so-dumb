@@ -17,24 +17,24 @@ export default function AuthFormWrapper({
     <div className="min-h-screen bg-white relative overflow-hidden">
       {/* Decorative Elements */}
       <div className="absolute inset-0 bg-[linear-gradient(45deg,#80808012_1px,transparent_1px),linear-gradient(-45deg,#80808012_1px,transparent_1px)] bg-[size:20px_20px]" />
-      <div className="absolute top-0 right-0 w-32 h-32 bg-blue-300 border-2 border-black transform rotate-12 translate-x-8 -translate-y-8" />
-      <div className="absolute bottom-0 left-0 w-40 h-40 bg-yellow-300 border-2 border-black transform -rotate-12 -translate-x-8 translate-y-8" />
-      <div className="absolute top-1/4 right-0 w-20 h-20 bg-orange-300 border-2 border-black transform -rotate-6 translate-x-4" />
+      <div className="absolute top-0 right-0 w-24 md:w-32 h-24 md:h-32 bg-blue-300 border-2 border-black transform rotate-12 translate-x-4 md:translate-x-8 -translate-y-4 md:-translate-y-8 hidden sm:block" />
+      <div className="absolute bottom-0 left-0 w-32 md:w-40 h-32 md:h-40 bg-yellow-300 border-2 border-black transform -rotate-12 -translate-x-4 md:-translate-x-8 translate-y-4 md:translate-y-8 hidden sm:block" />
+      <div className="absolute top-1/4 right-0 w-16 md:w-20 h-16 md:h-20 bg-orange-300 border-2 border-black transform -rotate-6 translate-x-2 md:translate-x-4 hidden sm:block" />
 
-      <div className="pt-14 pb-24 relative">
+      <div className="pt-6 md:pt-14 pb-4 md:pb-24 relative">
         <main className="mx-auto p-4 relative">
           <div className="max-w-md mx-auto">
-            <div className="text-center mb-12">
+            <div className="text-center mb-6 md:mb-12">
               <FadeIn>
-                <YellowButton className="mb-6 relative z-10">
+                <YellowButton className="mb-4 md:mb-6 relative z-10">
                   {subtitle}
                 </YellowButton>
               </FadeIn>
               <FadeIn delay={0.1}>
-                <h1 className="text-6xl font-black mb-6 leading-tight relative">
+                <h1 className="text-5xl md:text-6xl font-black mb-6 leading-tight relative">
                   <span className="relative inline-block z-20">
                     {title}
-                    <div className="absolute bottom-2 left-0 w-full h-4 bg-orange-300 -z-10 transform -rotate-2" />
+                    <div className="absolute bottom-2 left-0 w-full h-2 md:h-4 bg-orange-300 -z-10 transform -rotate-2" />
                   </span>
                 </h1>
               </FadeIn>
