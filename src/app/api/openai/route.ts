@@ -8,7 +8,6 @@ if (!OPENAI_API_KEY) {
 }
 
 export const maxDuration = 30;
-export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {

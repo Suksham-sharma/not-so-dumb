@@ -18,14 +18,8 @@ import AnimatedBlobs from "@/components/AnimatedBlobs";
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
-  const [lastQuery, setLastQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [currentReasoning, setCurrentReasoning] = useState("");
-  const [searchStatus, setSearchStatus] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [currentSearchResults, setCurrentSearchResults] = useState<
-    SearchResult[]
-  >([]);
   const [showTavilyModal, setShowTavilyModal] = useState(false);
   const [showReasoningModal, setShowReasoningModal] = useState(false);
   const [selectedMessageData, setSelectedMessageData] = useState<{
@@ -51,9 +45,7 @@ export default function Home() {
     if (!input.trim() || isLoading) return;
 
     setHasSubmitted(true);
-    setLastQuery(input);
     setError(null);
-    setCurrentSearchResults([]);
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
@@ -63,7 +55,6 @@ export default function Home() {
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
-    setCurrentReasoning("");
 
     // Create a new chat section with loading states
     const newSection: ChatSection = {
@@ -200,7 +191,6 @@ export default function Home() {
                 (assistantMessage.reasoning || "") +
                 parsed.choices[0].delta.reasoning_content;
               assistantMessage.reasoning = newReasoning;
-              setCurrentReasoning(newReasoning);
               setChatSections((prev) => {
                 const updated = [...prev];
                 updated[sectionIndex] = {
@@ -262,7 +252,6 @@ export default function Home() {
       }
     } finally {
       setIsLoading(false);
-      setSearchStatus("");
       abortControllerRef.current = null;
     }
   };

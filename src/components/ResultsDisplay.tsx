@@ -3,7 +3,6 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ChatSection } from "../types";
 import SourceIcon from "./icons/SourceIcon";
-import ThinkingIcon from "./icons/ThinkingIcon";
 import ArrowIcon from "./icons/ArrowIcon";
 import { FadeIn } from "./ui/motion";
 
@@ -127,71 +126,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           </div>
         </div>
       )}
-
-      {/* Thinking Process Loading State */}
-      {/* {section.isLoadingThinking && (
-        <div className="mb-16 bg-white/80 p-8 rounded-xl shadow-lg">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-6 h-6 bg-gray-200 rounded" />
-            <div className="h-5 w-36 bg-gray-200 rounded" />
-          </div>
-          <div className="pl-6 border-l-2 border-black bg-gray-50/50 rounded-r-xl p-6">
-            <div className="animate-pulse space-y-3">
-              <div className="h-5 bg-gray-200 rounded w-full" />
-              <div className="h-5 bg-gray-200 rounded w-5/6" />
-              <div className="h-5 bg-gray-200 rounded w-4/5" />
-            </div>
-          </div>
-        </div>
-      )} */}
-
-      {/* Thinking Process */}
-      {/* {section.reasoning && (
-        <div className="mb-16 bg-white/80 p-8 rounded-xl shadow-lg">
-          <div className="flex justify-between items-center mb-6">
-            <div className="flex items-center gap-3">
-              <ThinkingIcon className="w-6 h-6 text-black" />
-              <h3 className="text-xl text-black font-heading">
-                Thinking Process
-              </h3>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={onViewReasoningInput}
-                className="text-sm text-black bg-blue-300 px-4 py-2 rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none flex items-center gap-2 font-heading"
-              >
-                <span>View Full Input</span>
-                <ArrowIcon className="w-5 h-5" />
-              </button>
-              <button
-                onClick={onToggleReasoning}
-                className="text-black bg-yellow-300 p-2 rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
-              >
-                <svg
-                  className={`w-6 h-6 transform transition-transform ${
-                    section.isReasoningCollapsed ? "-rotate-90" : "rotate-0"
-                  }`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-          <FadeIn className="pl-6 border-l-2 border-black bg-gray-50/50 rounded-r-xl p-6">
-            <div className="text-base text-black font-heading leading-relaxed overflow-hidden">
-              {section.reasoning}
-            </div>
-          </FadeIn>
-        </div>
-      )} */}
 
       {/* Final Report */}
       {section.response && (
