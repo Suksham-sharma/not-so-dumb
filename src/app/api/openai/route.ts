@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import axios from "axios";
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
@@ -9,7 +8,6 @@ if (!OPENAI_API_KEY) {
 }
 
 export const maxDuration = 30;
-
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
@@ -17,38 +15,40 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
-    const response = await axios.post(
-      OPENAI_API_URL,
-      {
+    const response = await fetch(OPENAI_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
         model: "gpt-4o-mini",
         messages,
         stream: true,
         max_tokens: 4000,
         temperature: 0.7,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${OPENAI_API_KEY}`,
-        },
-        responseType: "stream",
-      }
-    );
+      }),
+    });
 
-    if (!response.data) {
-      throw new Error("No response data available");
+    if (!response.ok) {
+      throw new Error(`OpenAI API error: ${response.statusText}`);
     }
 
-    const reader = response.data.getReader();
+    if (!response.body) {
+      throw new Error("No response body available");
+    }
+
     const encoder = new TextEncoder();
     const decoder = new TextDecoder();
 
     const stream = new ReadableStream({
       async start(controller) {
         try {
+          const reader = response.body?.getReader();
+          if (!reader) throw new Error("No reader available");
+
           while (true) {
             const { done, value } = await reader.read();
-
             if (done) {
               controller.close();
               break;
@@ -79,10 +79,6 @@ export async function POST(req: Request) {
         } catch (e) {
           controller.error(e);
         }
-      },
-
-      cancel() {
-        reader.cancel();
       },
     });
 

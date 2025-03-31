@@ -129,7 +129,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       )}
 
       {/* Thinking Process Loading State */}
-      {section.isLoadingThinking && (
+      {/* {section.isLoadingThinking && (
         <div className="mb-16 bg-white/80 p-8 rounded-xl shadow-lg">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-6 h-6 bg-gray-200 rounded" />
@@ -143,10 +143,10 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Thinking Process */}
-      {section.reasoning && (
+      {/* {section.reasoning && (
         <div className="mb-16 bg-white/80 p-8 rounded-xl shadow-lg">
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-3">
@@ -191,7 +191,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
             </div>
           </FadeIn>
         </div>
-      )}
+      )} */}
 
       {/* Final Report */}
       {section.response && (
