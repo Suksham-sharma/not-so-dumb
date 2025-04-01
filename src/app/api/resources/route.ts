@@ -1,9 +1,18 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { upsertToPinecone, deleteFromPinecone } from "@/lib/pinecone";
 
 export async function POST(request: Request) {
   try {
-    const { type = "link", url, title, tags, image, content, pattern } = await request.json();
+    const {
+      type = "link",
+      url,
+      title,
+      tags,
+      image,
+      content,
+      pattern,
+    } = await request.json();
     console.log("Request Body:", { type, url, title, tags, content });
     const userId = request.headers.get("x-user-id");
 
@@ -43,6 +52,17 @@ export async function POST(request: Request) {
       include: {
         tags: true,
       },
+    });
+
+    // Store in Pinecone
+    await upsertToPinecone({
+      userId,
+      resourceId: resource.id,
+      type,
+      title,
+      tags: resource.tags.map((tag) => tag.name),
+      url,
+      content,
     });
 
     const transformedResource = {
@@ -119,7 +139,10 @@ export async function DELETE(request: Request) {
       );
     }
 
-    // Delete the resource
+    // Delete from Pinecone
+    await deleteFromPinecone(id);
+
+    // Delete from database
     await prisma.resource.delete({
       where: { id },
     });

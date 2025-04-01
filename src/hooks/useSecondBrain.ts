@@ -5,6 +5,15 @@ import { toastStyles } from "@/lib/styles";
 
 type FormType = "link" | "note" | null;
 
+interface BrainChatResponse {
+  answer: string;
+  sources: Array<{
+    title: string;
+    type: string;
+    url?: string;
+  }>;
+}
+
 export const useSecondBrain = () => {
   const {
     resources,
@@ -25,6 +34,14 @@ export const useSecondBrain = () => {
   const [selectedForm, setSelectedForm] = useState<FormType>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [linkToDelete, setLinkToDelete] = useState<string | null>(null);
+  const [isBrainChatOpen, setIsBrainChatOpen] = useState(false);
+  const [brainChatQuery, setBrainChatQuery] = useState("");
+  const [selectedResourceId, setSelectedResourceId] = useState<string | null>(
+    null
+  );
+  const [isLoadingBrainChat, setIsLoadingBrainChat] = useState(false);
+  const [brainChatResponse, setBrainChatResponse] =
+    useState<BrainChatResponse | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,6 +72,39 @@ export const useSecondBrain = () => {
     } finally {
       setDeleteModalOpen(false);
       setLinkToDelete(null);
+    }
+  };
+
+  const handleBrainChat = async () => {
+    if (!brainChatQuery.trim()) return;
+
+    setIsLoadingBrainChat(true);
+    try {
+      const response = await fetch("/api/brain-chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-user-id": "user-id", // Replace with actual user ID
+        },
+        body: JSON.stringify({
+          query: brainChatQuery,
+          resourceId: selectedResourceId,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to get brain chat response");
+
+      const data = await response.json();
+      setBrainChatResponse(data);
+    } catch (error) {
+      console.error("Error in brain chat:", error);
+      toast.error("Failed to get brain chat response", {
+        className: toastStyles.error,
+        duration: 3000,
+        position: "bottom-right",
+      });
+    } finally {
+      setIsLoadingBrainChat(false);
     }
   };
 
@@ -106,5 +156,15 @@ export const useSecondBrain = () => {
     handleSubmit,
     availableTags,
     filteredResources,
+    // Brain Chat
+    isBrainChatOpen,
+    setIsBrainChatOpen,
+    brainChatQuery,
+    setBrainChatQuery,
+    selectedResourceId,
+    setSelectedResourceId,
+    isLoadingBrainChat,
+    brainChatResponse,
+    handleBrainChat,
   };
 };

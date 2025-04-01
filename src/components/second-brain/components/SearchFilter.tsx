@@ -50,7 +50,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
   };
 
   return (
-    <FadeIn className="mb-6 max-w-5xl mx-auto">
+    <FadeIn className="w-full">
       <div className="flex flex-col md:flex-row gap-4 items-start relative">
         <div className="relative flex-1">
           <Search
@@ -60,7 +60,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
           <input
             type="text"
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-none transition-all"
+            className="w-full pl-10 pr-4 py-3 rounded-lg border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-none transition-all placeholder:text-gray-400"
             placeholder="Search your second brain..."
           />
         </div>
@@ -68,7 +68,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
         {availableTags.length > 0 && (
           <div
             ref={dropdownRef}
-            className="relative min-w-[240px] md:min-w-[280px]"
+            className="relative w-full md:w-auto md:min-w-[240px]"
           >
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}

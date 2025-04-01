@@ -5,12 +5,13 @@ import LinkForm from "./components/LinkForm";
 import NotesForm from "./components/NotesForm";
 import LinkCard from "./components/ResourceCard";
 import SearchFilter from "./components/SearchFilter";
+import { BrainChat } from "./components/BrainChat";
 import Image from "next/image";
 import { FadeIn } from "@/components/ui/motion";
 import { useSecondBrain } from "@/hooks/useSecondBrain";
 import LinkCardSkeleton from "./components/ResourceSkeleton";
-
-type FormType = "link" | "note" | null;
+import EmptyState from "./components/EmptyState";
+import { Brain } from "lucide-react";
 
 const Header = () => (
   <div className="text-center mb-16">
@@ -24,60 +25,6 @@ const Header = () => (
       Save, organize, and rediscover your valuable online resources!
     </FadeIn>
   </div>
-);
-
-const EmptyState = ({
-  onAddClick,
-  isEmpty,
-}: {
-  onAddClick: () => void;
-  isEmpty: boolean;
-}) => (
-  <FadeIn className="col-span-full p-8 bg-white/80 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none">
-    <div className="flex items-center gap-8">
-      <motion.img
-        src="/GetStarted.png"
-        alt="Get Started Illustration"
-        className="w-56 h-56 object-contain flex-shrink-0"
-        initial={{ scale: 0.8, opacity: 0, x: -20 }}
-        animate={{ scale: 1, opacity: 1, x: 0 }}
-        transition={{ duration: 0.5 }}
-      />
-      <div className="flex-1 space-y-4">
-        <motion.h3
-          className="text-2xl font-bold"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
-        >
-          {isEmpty ? "Time to Build Your Knowledge Base!" : "No Matches Found"}
-        </motion.h3>
-        <motion.p
-          className="text-gray-600 text-lg"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-        >
-          {isEmpty
-            ? "Your Second Brain is ready to grow. Start by adding your favorite articles, videos, or any online resources you want to remember."
-            : "Try adjusting your search terms or filters to find what you're looking for."}
-        </motion.p>
-        {isEmpty && (
-          <motion.button
-            onClick={onAddClick}
-            className="mt-4 px-6 py-3 bg-orange-400 text-black font-bold rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none inline-flex items-center gap-2"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            whileHover={{ scale: 1.02 }}
-          >
-            <Image src="/feather.png" alt="Add" width={20} height={20} />
-            Add Your First Resource
-          </motion.button>
-        )}
-      </div>
-    </div>
-  </FadeIn>
 );
 
 const SecondBrain: React.FC = () => {
@@ -101,6 +48,16 @@ const SecondBrain: React.FC = () => {
     handleSubmit,
     availableTags,
     filteredResources,
+    // Brain Chat
+    isBrainChatOpen,
+    setIsBrainChatOpen,
+    brainChatQuery,
+    setBrainChatQuery,
+    selectedResourceId,
+    setSelectedResourceId,
+    isLoadingBrainChat,
+    brainChatResponse,
+    handleBrainChat,
   } = useSecondBrain();
 
   const modalRef = React.useRef<HTMLDivElement>(null);
@@ -130,12 +87,26 @@ const SecondBrain: React.FC = () => {
         <Header />
 
         <div className="space-y-6 max-w-5xl mx-auto">
-          <SearchFilter
-            onSearchChange={setSearchTerm}
-            onTagSelect={setSelectedTag}
-            availableTags={availableTags}
-            selectedTag={selectedTag}
-          />
+          <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center mb-6">
+            <div className="flex-1 max-w-2xl">
+              <SearchFilter
+                onSearchChange={setSearchTerm}
+                onTagSelect={setSelectedTag}
+                availableTags={availableTags}
+                selectedTag={selectedTag}
+              />
+            </div>
+            <button
+              onClick={() => setIsBrainChatOpen(true)}
+              className="flex-shrink-0 px-6 py-2.5 bg-blue-100 text-black rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none flex items-center justify-center gap-2 group"
+            >
+              <div className="w-5 h-5 relative flex items-center justify-center">
+                <Brain className="w-full h-full transition-transform group-hover:scale-110" />
+              </div>
+              <span className="font-bold whitespace-nowrap">Brain Chat</span>
+            </button>
+          </div>
+
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {isLoadingResources ? (
               [...Array(3)].map((_, index) => <LinkCardSkeleton key={index} />)
@@ -261,6 +232,20 @@ const SecondBrain: React.FC = () => {
             </FadeIn>
           </div>
         )}
+
+        {/* Brain Chat Modal */}
+        <BrainChat
+          isOpen={isBrainChatOpen}
+          onClose={() => setIsBrainChatOpen(false)}
+          query={brainChatQuery}
+          setQuery={setBrainChatQuery}
+          selectedResourceId={selectedResourceId}
+          setSelectedResourceId={setSelectedResourceId}
+          isLoading={isLoadingBrainChat}
+          response={brainChatResponse}
+          onSubmit={handleBrainChat}
+          resources={resources}
+        />
       </div>
     </div>
   );
