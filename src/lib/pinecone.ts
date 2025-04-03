@@ -7,9 +7,7 @@ if (!process.env.PINECONE_INDEX_NAME)
   throw new Error("Missing PINECONE_INDEX_NAME");
 if (!process.env.OPENAI_API_KEY) throw new Error("Missing OPENAI_API_KEY");
 
-const pinecone = new Pinecone({
-  apiKey: process.env.PINECONE_API_KEY,
-});
+const pinecone = new Pinecone();
 
 const pineconeIndex = pinecone.Index(process.env.PINECONE_INDEX_NAME);
 
@@ -18,7 +16,9 @@ const embeddings = new OpenAIEmbeddings({
   modelName: "text-embedding-3-small",
 });
 
-export const vectorStore = new PineconeStore(embeddings, { pineconeIndex });
+export const vectorStore = await PineconeStore.fromExistingIndex(embeddings, {
+  pineconeIndex,
+});
 
 export interface VectorMetadata {
   userId: string;
@@ -70,12 +70,10 @@ export async function searchPinecone({
   userId: string;
   resourceId?: string;
 }) {
-  const results = await vectorStore.similaritySearch(query, 5, {
-    filter: {
-      userId,
-      ...(resourceId && { resourceId }),
-    },
-  });
+  const metadataFilter: Record<string, any> = { userId: userId };
+  if (resourceId) metadataFilter.resourceId = resourceId;
+
+  const results = await vectorStore.similaritySearch(query, 5, metadataFilter);
 
   return results;
 }

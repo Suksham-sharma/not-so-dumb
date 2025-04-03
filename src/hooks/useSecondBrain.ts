@@ -84,7 +84,6 @@ export const useSecondBrain = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-user-id": "user-id", // Replace with actual user ID
         },
         body: JSON.stringify({
           query: brainChatQuery,
@@ -92,17 +91,27 @@ export const useSecondBrain = () => {
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to get brain chat response");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Brain chat error response:", errorData);
+        throw new Error(errorData.error || "Failed to get brain chat response");
+      }
 
       const data = await response.json();
+      console.log("Brain chat response:", data);
       setBrainChatResponse(data);
     } catch (error) {
       console.error("Error in brain chat:", error);
-      toast.error("Failed to get brain chat response", {
-        className: toastStyles.error,
-        duration: 3000,
-        position: "bottom-right",
-      });
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to get brain chat response",
+        {
+          className: toastStyles.error,
+          duration: 3000,
+          position: "bottom-right",
+        }
+      );
     } finally {
       setIsLoadingBrainChat(false);
     }

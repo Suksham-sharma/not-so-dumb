@@ -23,6 +23,7 @@ export async function middleware(request: NextRequest) {
     "/second-brain",
     "/api/tags",
     "/api/resources",
+    "/api/brain-chat",
   ];
   const isProtectedPath = protectedPaths.some(
     (path) => request.nextUrl.pathname === path
@@ -67,5 +68,6 @@ export const config = {
     "/api/:path*",
     "/home/:path*",
     "/second-brain/:path*",
+    "/api/brain-chat/:path*",
   ],
 };
