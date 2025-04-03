@@ -36,12 +36,11 @@ export const useSecondBrain = () => {
   const [linkToDelete, setLinkToDelete] = useState<string | null>(null);
   const [isBrainChatOpen, setIsBrainChatOpen] = useState(false);
   const [brainChatQuery, setBrainChatQuery] = useState("");
-  const [selectedResourceId, setSelectedResourceId] = useState<string | null>(
-    null
-  );
+  const [selectedResourceIds, setSelectedResourceIds] = useState<string[]>([]);
   const [isLoadingBrainChat, setIsLoadingBrainChat] = useState(false);
   const [brainChatResponse, setBrainChatResponse] =
     useState<BrainChatResponse | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,6 +55,7 @@ export const useSecondBrain = () => {
   const handleConfirmDelete = async () => {
     if (!linkToDelete) return;
     try {
+      setIsDeleting(true);
       await deleteResource(linkToDelete);
       toast.success("Resource deleted successfully", {
         className: toastStyles.success,
@@ -72,6 +72,7 @@ export const useSecondBrain = () => {
     } finally {
       setDeleteModalOpen(false);
       setLinkToDelete(null);
+      setIsDeleting(false);
     }
   };
 
@@ -87,7 +88,7 @@ export const useSecondBrain = () => {
         },
         body: JSON.stringify({
           query: brainChatQuery,
-          resourceId: selectedResourceId,
+          resourceIds: selectedResourceIds,
         }),
       });
 
@@ -165,13 +166,14 @@ export const useSecondBrain = () => {
     handleSubmit,
     availableTags,
     filteredResources,
+    isDeleting,
     // Brain Chat
     isBrainChatOpen,
     setIsBrainChatOpen,
     brainChatQuery,
     setBrainChatQuery,
-    selectedResourceId,
-    setSelectedResourceId,
+    selectedResourceIds,
+    setSelectedResourceIds,
     isLoadingBrainChat,
     brainChatResponse,
     handleBrainChat,

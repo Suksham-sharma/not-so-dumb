@@ -51,16 +51,13 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
 
   return (
     <FadeIn className="w-full">
-      <div className="flex flex-col md:flex-row gap-4 items-start relative">
-        <div className="relative flex-1">
-          <Search
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-            size={20}
-          />
+      <div className="flex flex-col md:flex-row gap-3 md:gap-4 items-start relative">
+        <div className="relative flex-1 w-full">
+          <Search className="absolute left-2.5 md:left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 md:w-5 md:h-5" />
           <input
             type="text"
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 rounded-lg border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-none transition-all placeholder:text-gray-400"
+            className="w-full pl-8 md:pl-10 pr-3 md:pr-4 py-2.5 md:py-3 rounded-lg border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-none transition-all placeholder:text-gray-400 text-sm md:text-base"
             placeholder="Search your second brain..."
           />
         </div>
@@ -68,13 +65,13 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
         {availableTags.length > 0 && (
           <div
             ref={dropdownRef}
-            className="relative w-full md:w-auto md:min-w-[240px]"
+            className="relative w-full md:w-auto md:min-w-[200px]"
           >
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="w-full p-3 rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all bg-white flex items-center justify-between"
+              className="w-full p-2.5 md:p-3 rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all bg-white flex items-center justify-between"
             >
-              <span className="font-medium truncate">
+              <span className="font-medium truncate text-sm md:text-base">
                 {selectedTags.length === 0
                   ? "All Tags"
                   : `${selectedTags.length} tag${
@@ -82,7 +79,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
                     } selected`}
               </span>
               <ChevronDown
-                size={20}
+                size={16}
                 className={`transform transition-transform flex-shrink-0 ml-2 ${
                   isDropdownOpen ? "rotate-180" : ""
                 }`}
@@ -116,60 +113,18 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
             )}
 
             {isDropdownOpen && (
-              <div className="absolute z-50 w-full mt-2 bg-white border-2 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] overflow-hidden max-h-[300px] overflow-y-auto">
-                <button
-                  onClick={() => handleTagSelect("")}
-                  className={`w-full px-4 py-3 text-left hover:bg-orange-100 transition-colors border-b-2 border-black font-medium flex items-center gap-3 ${
-                    selectedTags.length === 0 ? "bg-orange-200" : ""
-                  }`}
-                >
-                  <div className="w-5 h-5 border-2 border-black rounded flex items-center justify-center bg-white group-hover:bg-orange-100 transition-colors">
-                    {selectedTags.length === 0 && (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-3 w-3"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    )}
-                  </div>
-                  All Tags
-                </button>
-                <div className="max-h-[240px] overflow-y-auto">
-                  {availableTags.map((tag) => (
-                    <button
-                      key={tag}
-                      onClick={() => handleTagSelect(tag)}
-                      className={`w-full px-4 py-3 text-left hover:bg-orange-100 transition-colors font-medium flex items-center gap-3 bg-white group ${
-                        selectedTags.includes(tag) ? "bg-orange-200" : ""
-                      }`}
-                    >
-                      <div className="w-5 h-5 border-2 border-black rounded flex items-center justify-center bg-white group-hover:bg-orange-100 transition-colors flex-shrink-0">
-                        {selectedTags.includes(tag) && (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-3 w-3"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        )}
-                      </div>
-                      <span className="truncate">{tag}</span>
-                    </button>
-                  ))}
-                </div>
+              <div className="absolute z-50 mt-2 w-full bg-white border-2 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] py-1">
+                {availableTags.map((tag) => (
+                  <button
+                    key={tag}
+                    onClick={() => handleTagSelect(tag)}
+                    className={`w-full text-left px-3 py-1.5 text-sm md:text-base hover:bg-orange-100 transition-colors ${
+                      selectedTags.includes(tag) ? "bg-orange-100" : ""
+                    }`}
+                  >
+                    {tag}
+                  </button>
+                ))}
               </div>
             )}
           </div>
