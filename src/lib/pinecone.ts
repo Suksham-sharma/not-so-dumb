@@ -73,9 +73,17 @@ export async function searchPinecone({
   const metadataFilter: Record<string, any> = { userId: userId };
   if (resourceId) metadataFilter.resourceId = resourceId;
 
-  const results = await vectorStore.similaritySearch(query, 5, metadataFilter);
+  const results = await vectorStore.similaritySearchWithScore(
+    query,
+    5,
+    metadataFilter
+  );
 
-  return results;
+  const filteredResults = results
+    .filter(([_, score]) => score > 0.5)
+    .map(([doc]) => doc);
+
+  return filteredResults;
 }
 
 export async function deleteFromPinecone(resourceId: string) {
