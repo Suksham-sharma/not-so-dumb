@@ -4,7 +4,19 @@ import { parse } from "node-html-parser";
 const getHtml = async (url: string) => {
   return await fetch(url, {
     headers: {
-      "User-Agent": "Mozilla/5.0",
+      "User-Agent":
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      Accept:
+        "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+      "Accept-Language": "en-US,en;q=0.5",
+      "Accept-Encoding": "gzip, deflate, br",
+      Connection: "keep-alive",
+      "Upgrade-Insecure-Requests": "1",
+      "Sec-Fetch-Dest": "document",
+      "Sec-Fetch-Mode": "navigate",
+      "Sec-Fetch-Site": "none",
+      "Sec-Fetch-User": "?1",
+      "Cache-Control": "max-age=0",
     },
   })
     .then((r) => r.text())
@@ -55,8 +67,11 @@ export async function GET(request: Request) {
   }
 
   try {
+    console.log(`Fetching metadata for URL: ${url}`);
     const html = await getHtml(url);
+
     if (!html) {
+      console.error(`Failed to fetch HTML for URL: ${url}`);
       return NextResponse.json({
         title: url,
         description: "No description available",
@@ -65,6 +80,7 @@ export async function GET(request: Request) {
     }
 
     const { metaTags, title: titleTag, linkTags } = getHeadChildNodes(html);
+    console.log(`Successfully parsed metadata for URL: ${url}`);
 
     const metadata: Record<string, string> = {};
 
@@ -96,13 +112,19 @@ export async function GET(request: Request) {
         metadata["shortcut icon"]
     );
 
+    console.log(`Successfully extracted metadata for URL: ${url}`, {
+      title,
+      description,
+      image,
+    });
+
     return NextResponse.json({
       title,
       description,
       image,
     });
   } catch (error) {
-    console.error("Error fetching metadata:", error);
+    console.error(`Error fetching metadata for URL: ${url}`, error);
     return NextResponse.json(
       { error: "Failed to fetch metadata" },
       { status: 500 }

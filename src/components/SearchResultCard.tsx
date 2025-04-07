@@ -8,8 +8,8 @@ interface SearchResultCardProps {
 
 const SearchResultCard: React.FC<SearchResultCardProps> = ({ result }) => {
   return (
-    <div className="flex-shrink-0 w-[300px] bg-gray-50 border border-gray-200 rounded-xl overflow-hidden">
-      <div className="h-40 bg-gray-200 overflow-hidden relative">
+    <div className="flex-shrink-0 w-[240px] md:w-[300px] bg-gray-50 border border-gray-200 rounded-xl overflow-hidden">
+      <div className="h-32 md:h-40 bg-gray-200 overflow-hidden relative">
         {result.image ? (
           <>
             <div className="absolute inset-0 bg-gray-200 animate-pulse" />
@@ -32,7 +32,7 @@ const SearchResultCard: React.FC<SearchResultCardProps> = ({ result }) => {
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <svg
-              className="w-8 h-8 text-gray-400"
+              className="w-6 h-6 md:w-8 md:h-8 text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -47,16 +47,18 @@ const SearchResultCard: React.FC<SearchResultCardProps> = ({ result }) => {
           </div>
         )}
       </div>
-      <div className="p-4">
+      <div className="p-3 md:p-4">
         <a
           href={result.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-600 hover:underline block mb-2 font-medium line-clamp-2"
+          className="text-blue-600 hover:underline block mb-1.5 md:mb-2 font-medium line-clamp-2 text-sm md:text-base"
         >
           {result.title}
         </a>
-        <p className="text-sm text-gray-600 line-clamp-3">{result.content}</p>
+        <p className="text-xs md:text-sm text-gray-600 line-clamp-3">
+          {result.content}
+        </p>
       </div>
     </div>
   );

@@ -271,19 +271,19 @@ export default function Home() {
     <div className="min-h-screen bg-white bg-[linear-gradient(to_right,#80808033_1px,transparent_1px),linear-gradient(to_bottom,#80808033_1px,transparent_1px)] bg-[size:70px_70px] relative overflow-hidden">
       <AnimatedBlobs />
       <TopBar />
-      <div className="pt-14 pb-24 relative">
+      <div className="pt-20 md:pt-24 pb-24 relative">
         <div className="absolute inset-0 bg-white/50" />
-        <motion.div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-purple-300 to-blue-100/30 blur-3xl" />
-        <main className=" mx-auto p-4 relative">
+        <motion.div className="absolute left-1/2 top-1/2 h-[300px] md:h-[500px] w-[300px] md:w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-purple-300 to-blue-100/30 blur-3xl" />
+        <main className="mx-auto py-4 px-2 md:p-6 relative max-w-7xl">
           <AnimatePresence mode="wait">
             {!hasSubmitted ? (
-              <div className="min-h-screen flex flex-col items-center justify-center">
-                <div className="text-center mb-12">
+              <div className="min-h-[calc(100vh-8rem)] flex flex-col items-center justify-center px-4">
+                <div className="text-center mb-8 md:mb-12">
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
-                    className="inline-block px-4 py-1.5 bg-yellow-300 text-black rounded-full text-sm font-bold mb-6 border-2 border-black shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
+                    className="inline-block px-3 md:px-4 py-1 md:py-1.5 bg-yellow-300 text-black rounded-full text-xs md:text-sm font-bold mb-4 md:mb-6 border-2 border-black shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
                   >
                     Powered by Web Enhanced LLM
                   </motion.div>
@@ -291,25 +291,27 @@ export default function Home() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
-                    className="text-xl text-gray-600 font-light max-w-2xl mx-auto leading-relaxed"
+                    className="text-lg md:text-xl text-gray-600 font-light max-w-2xl mx-auto leading-relaxed px-4"
                   >
                     Do research for your needs in seconds, so you can spend more
                     time doing what actually matters.
                   </motion.p>
                 </div>
-                <SearchInput
-                  input={input}
-                  setInput={setInput}
-                  isLoading={isLoading}
-                  handleSubmit={handleSubmit}
-                  selectedSuggestion={selectedSuggestion}
-                  handleSuggestionClick={handleSuggestionClick}
-                  showSuggestions={true}
-                />
+                <div className="w-full max-w-[704px]">
+                  <SearchInput
+                    input={input}
+                    setInput={setInput}
+                    isLoading={isLoading}
+                    handleSubmit={handleSubmit}
+                    selectedSuggestion={selectedSuggestion}
+                    handleSuggestionClick={handleSuggestionClick}
+                    showSuggestions={true}
+                  />
+                </div>
               </div>
             ) : (
               <motion.div
-                className="space-y-6 pb-32"
+                className="space-y-4 md:space-y-6 pb-20 md:pb-32"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
@@ -317,7 +319,7 @@ export default function Home() {
                 {chatSections.map((section, index) => (
                   <div
                     key={index}
-                    className="border-2 border-black bg-bg/60 rounded-xl  hover:shadow-none"
+                    className="border-2 border-black bg-bg/60 rounded-xl hover:shadow-none mx-2 md:mx-0"
                   >
                     <ResultsDisplay
                       section={section}
@@ -345,31 +347,32 @@ export default function Home() {
         </main>
       </div>
 
-      {/* Replace the floating input box with SearchInput component */}
       {hasSubmitted && (
-        <div className="fixed bottom-6 left-0 right-0 flex justify-center">
-          <SearchInput
-            input={input}
-            setInput={setInput}
-            isLoading={isLoading}
-            handleSubmit={handleSubmit}
-          />
+        <div className="fixed bottom-4 md:bottom-6 left-0 right-0 flex justify-center px-4">
+          <div className="w-full max-w-[704px]">
+            <SearchInput
+              input={input}
+              setInput={setInput}
+              isLoading={isLoading}
+              handleSubmit={handleSubmit}
+            />
+          </div>
         </div>
       )}
 
       {showTavilyModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg border-2 border-black p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-neo">
+          <div className="bg-white rounded-lg border-2 border-black p-4 md:p-6 max-w-2xl w-full max-h-[90vh] md:max-h-[80vh] overflow-y-auto shadow-neo">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-heading  text-black">
+              <h3 className="text-base md:text-lg font-heading text-black">
                 Full Tavily Response
               </h3>
               <button
                 onClick={() => setShowTavilyModal(false)}
-                className="text-black hover:text-gray-700 border-2 border-black rounded-lg p-2 shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
+                className="text-black hover:text-gray-700 border-2 border-black rounded-lg p-1.5 md:p-2 shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
               >
                 <svg
-                  className="w-6 h-6"
+                  className="w-5 h-5 md:w-6 md:h-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -383,7 +386,7 @@ export default function Home() {
                 </svg>
               </button>
             </div>
-            <pre className="whitespace-pre-wrap text-sm text-black font-mono bg-yellow-100 p-4 rounded-lg border-2 border-black">
+            <pre className="whitespace-pre-wrap text-xs md:text-sm text-black font-mono bg-yellow-100 p-3 md:p-4 rounded-lg border-2 border-black overflow-x-auto">
               {JSON.stringify(selectedMessageData?.tavily, null, 2)}
             </pre>
           </div>
@@ -392,17 +395,17 @@ export default function Home() {
 
       {showReasoningModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg border-2 border-black p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-neo">
+          <div className="bg-white rounded-lg border-2 border-black p-4 md:p-6 max-w-2xl w-full max-h-[90vh] md:max-h-[80vh] overflow-y-auto shadow-neo">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-heading  text-black">
+              <h3 className="text-base md:text-lg font-heading text-black">
                 Full Reasoning Input
               </h3>
               <button
                 onClick={() => setShowReasoningModal(false)}
-                className="text-black hover:text-gray-700 border-2 border-black rounded-lg p-2 shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
+                className="text-black hover:text-gray-700 border-2 border-black rounded-lg p-1.5 md:p-2 shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none"
               >
                 <svg
-                  className="w-6 h-6"
+                  className="w-5 h-5 md:w-6 md:h-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -416,7 +419,7 @@ export default function Home() {
                 </svg>
               </button>
             </div>
-            <pre className="whitespace-pre-wrap text-sm text-black font-mono bg-yellow-100 p-4 rounded-lg border-2 border-black">
+            <pre className="whitespace-pre-wrap text-xs md:text-sm text-black font-mono bg-yellow-100 p-3 md:p-4 rounded-lg border-2 border-black overflow-x-auto">
               {selectedMessageData?.reasoning}
             </pre>
           </div>

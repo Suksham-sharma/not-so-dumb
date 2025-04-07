@@ -46,6 +46,7 @@ export async function POST(req: Request) {
           const reader = response.body?.getReader();
           if (!reader) throw new Error("No reader available");
 
+          let buffer = "";
           while (true) {
             const { done, value } = await reader.read();
             if (done) {
@@ -54,7 +55,11 @@ export async function POST(req: Request) {
             }
 
             const text = decoder.decode(value);
-            const lines = text.split("\n");
+            buffer += text;
+
+            // Process complete lines
+            const lines = buffer.split("\n");
+            buffer = lines.pop() || ""; // Keep the last incomplete line in the buffer
 
             for (const line of lines) {
               if (line.trim() === "") continue;
@@ -66,12 +71,19 @@ export async function POST(req: Request) {
               }
 
               try {
+                // Skip empty data
+                if (!data.trim()) continue;
+
                 const parsed = JSON.parse(data);
-                controller.enqueue(
-                  encoder.encode(JSON.stringify(parsed) + "\n")
-                );
+                if (parsed.choices?.[0]?.delta) {
+                  controller.enqueue(
+                    encoder.encode(JSON.stringify(parsed) + "\n")
+                  );
+                }
               } catch (e) {
-                console.error("Error parsing JSON:", e);
+                console.error("Error parsing JSON:", e, "Data:", data);
+                // Continue processing other lines even if one fails
+                continue;
               }
             }
           }

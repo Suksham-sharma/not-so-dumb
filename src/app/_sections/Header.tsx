@@ -14,13 +14,13 @@ export default function Header() {
       <div className="relative mx-auto w-full max-w-4xl px-4 py-16 text-center md:py-20 lg:py-[150px]">
         <FadeIn>
           <YellowButton className="mb-4 md:mb-6">
-            🚀 Think mdarter, Learn Faster
+            🚀 Think smarter, Learn faster
           </YellowButton>
         </FadeIn>
 
         <FadeIn
           delay={0.1}
-          className="text-3xl font-heading md:text-4xl md:text-5xl lg:text-6xl"
+          className="text-3xl font-heading md:text-4xl lg:text-6xl"
         >
           Supercharge Your Research{" "}
           <span className="relative inline-block">
@@ -31,7 +31,7 @@ export default function Header() {
 
         <FadeIn
           delay={0.2}
-          className="mx-auto my-8 md:my-10 lg:my-12 max-w-2xl text-base md:text-lg font-normal leading-relaxed text-gray-600 md:text-xl lg:text-2xl lg:leading-relaxed"
+          className="mx-auto my-8 md:my-10 lg:my-12 max-w-2xl text-base font-normal leading-relaxed text-gray-600 md:text-xl lg:text-2xl lg:leading-relaxed"
         >
           AI-powered research with instant quiz generation. Transform any
           content into knowledge.
