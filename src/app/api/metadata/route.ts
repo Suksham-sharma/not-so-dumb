@@ -2,22 +2,25 @@ import { NextResponse } from "next/server";
 import { parse } from "node-html-parser";
 
 const getHtml = async (url: string) => {
+  const headers = {
+    "User-Agent":
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+    Accept:
+      "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Accept-Encoding": "gzip, deflate, br",
+    Connection: "keep-alive",
+    "Upgrade-Insecure-Requests": "1",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "none",
+    "Sec-Fetch-User": "?1",
+    "Cache-Control": "max-age=0",
+  };
+
   return await fetch(url, {
-    headers: {
-      "User-Agent":
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-      Accept:
-        "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-      "Accept-Language": "en-US,en;q=0.5",
-      "Accept-Encoding": "gzip, deflate, br",
-      Connection: "keep-alive",
-      "Upgrade-Insecure-Requests": "1",
-      "Sec-Fetch-Dest": "document",
-      "Sec-Fetch-Mode": "navigate",
-      "Sec-Fetch-Site": "none",
-      "Sec-Fetch-User": "?1",
-      "Cache-Control": "max-age=0",
-    },
+    headers,
+    next: { revalidate: 3600 },
   })
     .then((r) => r.text())
     .catch(() => null);
@@ -58,6 +61,49 @@ const getRelativeUrl = (url: string, imageUrl: string | null) => {
   return new URL(imageUrl, baseURL).toString();
 };
 
+const getYoutubeMetadata = async (url: string) => {
+  const videoId = url.match(
+    /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/i
+  )?.[1];
+  if (!videoId) return null;
+
+  try {
+    const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
+    if (!YOUTUBE_API_KEY) {
+      console.error("YouTube API key is not configured");
+      return null;
+    }
+
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${YOUTUBE_API_KEY}`,
+      {
+        next: { revalidate: 3600 },
+      }
+    );
+
+    if (!response.ok) {
+      console.error("YouTube API request failed:", response.statusText);
+      return null;
+    }
+
+    const data = await response.json();
+    const video = data.items?.[0]?.snippet;
+
+    if (!video) {
+      return null;
+    }
+
+    return {
+      title: video.title,
+      description: video.description,
+      image: `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`,
+    };
+  } catch (error) {
+    console.error("Error fetching YouTube metadata:", error);
+    return null;
+  }
+};
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const url = searchParams.get("url");
@@ -67,11 +113,16 @@ export async function GET(request: Request) {
   }
 
   try {
-    console.log(`Fetching metadata for URL: ${url}`);
-    const html = await getHtml(url);
+    // Try YouTube-specific metadata first
+    if (url.includes("youtube.com") || url.includes("youtu.be")) {
+      const youtubeMetadata = await getYoutubeMetadata(url);
+      if (youtubeMetadata) {
+        return NextResponse.json(youtubeMetadata);
+      }
+    }
 
+    const html = await getHtml(url);
     if (!html) {
-      console.error(`Failed to fetch HTML for URL: ${url}`);
       return NextResponse.json({
         title: url,
         description: "No description available",
@@ -80,7 +131,6 @@ export async function GET(request: Request) {
     }
 
     const { metaTags, title: titleTag, linkTags } = getHeadChildNodes(html);
-    console.log(`Successfully parsed metadata for URL: ${url}`);
 
     const metadata: Record<string, string> = {};
 
@@ -112,19 +162,13 @@ export async function GET(request: Request) {
         metadata["shortcut icon"]
     );
 
-    console.log(`Successfully extracted metadata for URL: ${url}`, {
-      title,
-      description,
-      image,
-    });
-
     return NextResponse.json({
       title,
       description,
       image,
     });
   } catch (error) {
-    console.error(`Error fetching metadata for URL: ${url}`, error);
+    console.error("Error fetching metadata:", error);
     return NextResponse.json(
       { error: "Failed to fetch metadata" },
       { status: 500 }
