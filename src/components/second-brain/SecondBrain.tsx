@@ -272,8 +272,6 @@ const SecondBrain: React.FC = () => {
         <BrainChatSheet
           isOpen={isBrainChatOpen}
           onClose={() => setIsBrainChatOpen(false)}
-          query={brainChatQuery}
-          setQuery={setBrainChatQuery}
           selectedResourceIds={selectedResourceIds}
           setSelectedResourceIds={setSelectedResourceIds}
           isLoading={isLoadingBrainChat}

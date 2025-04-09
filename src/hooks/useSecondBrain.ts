@@ -76,8 +76,8 @@ export const useSecondBrain = () => {
     }
   };
 
-  const handleBrainChat = async () => {
-    if (!brainChatQuery.trim()) return;
+  const handleBrainChat = async (query: string) => {
+    if (!query.trim()) return;
 
     setIsLoadingBrainChat(true);
     try {
@@ -87,7 +87,7 @@ export const useSecondBrain = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          query: brainChatQuery,
+          query,
           resourceIds: selectedResourceIds,
         }),
       });
@@ -99,7 +99,6 @@ export const useSecondBrain = () => {
       }
 
       const data = await response.json();
-      console.log("Brain chat response:", data);
       setBrainChatResponse(data);
     } catch (error) {
       console.error("Error in brain chat:", error);

@@ -7,22 +7,6 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-function isGeneralQuery(query: string): boolean {
-  const generalPhrases = [
-    "hi",
-    "hello",
-    "hey",
-    "good morning",
-    "good afternoon",
-    "good evening",
-    "how are you",
-    "what can you do",
-    "help",
-    "who are you",
-  ];
-  return generalPhrases.some((phrase) => query.toLowerCase().includes(phrase));
-}
-
 export async function POST(request: Request) {
   try {
     const { query, resourceId } = await request.json();
