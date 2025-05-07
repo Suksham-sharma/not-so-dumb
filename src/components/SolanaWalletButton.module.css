@@ -1,0 +1,44 @@
+/* Custom Wallet Button Styles */
+.customWalletButton {
+  width: 100%;
+  max-width: 240px;
+  margin: 0 auto;
+  display: block;
+  text-align: center;
+}
+
+.customWalletButton :global(.wallet-adapter-button) {
+  background-color: rgb(79, 70, 229) !important; 
+  color: white !important;
+  font-weight: 600 !important;
+  padding: 0rem 1.5rem !important;
+  border-radius: 0.75rem !important;
+  border: 2px solid rgb(55, 48, 163) !important;
+  box-shadow: 4px 4px 0px 0px rgba(67, 56, 202, 0.5) !important;
+  transition: all 0.2s ease !important;
+  font-size: 1rem !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: auto !important;
+  display: inline-flex !important;
+  text-align: center !important;
+  align-items: center !important;
+  margin: 0 auto !important;
+}
+
+.customWalletButton :global(.wallet-adapter-button:hover) {
+  background-color: rgb(67, 56, 202) !important; 
+  transform: translate(2px, 2px) !important;
+  box-shadow: 1px 1px 0px 0px rgba(67, 56, 202, 0.5) !important;
+}
+
+.customWalletButton :global(.wallet-adapter-button:disabled) {
+  background-color: rgb(79, 70, 229) !important;
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+.customWalletButton :global(.wallet-adapter-button-start-icon),
+.customWalletButton :global(.wallet-adapter-button-end-icon) {
+  margin: 0 8px !important;
+} 

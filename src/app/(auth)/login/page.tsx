@@ -37,7 +37,6 @@ export default function LoginPage() {
       await login(data);
     } catch (error) {
       console.error("Login failed:", error);
-      // Error is already handled by useAuth hook with toast
     }
   };
 
@@ -45,7 +44,7 @@ export default function LoginPage() {
     <AuthFormWrapper title="Login" subtitle="Welcome Back! 👋">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-6 relative z-10"
+        className="space-y-5 relative z-10"
       >
         <FormInput
           label="Email"
@@ -97,13 +96,13 @@ export default function LoginPage() {
           </span>
         </Button>
 
-        <div className="relative flex items-center py-2">
+        <div className="relative flex items-center pt-2">
           <div className="flex-grow border-t border-gray-300"></div>
-          <span className="flex-shrink mx-4 text-gray-600 text-sm">OR</span>
+          <span className="flex-shrink mx-2 text-gray-600 text-sm">OR</span>
           <div className="flex-grow border-t border-gray-300"></div>
         </div>
 
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-2">
           <SolanaWalletButton onLogin={() => router.push("/quiz")} />
         </div>
 

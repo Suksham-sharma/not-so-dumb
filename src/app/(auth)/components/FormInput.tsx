@@ -30,7 +30,7 @@ export default function FormInput({
         {...register(name)}
         type={type}
         id={id}
-        className="w-full px-4 py-3 border-2 border-black rounded-lg focus:outline-none bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all focus:translate-x-[3px] focus:translate-y-[3px] focus:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full px-3 py-2 md:px-4 md:py-3 border-2 border-black rounded-lg focus:outline-none bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all focus:translate-x-[3px] focus:translate-y-[3px] focus:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
         placeholder={placeholder}
         autoComplete="off"
         disabled={disabled}

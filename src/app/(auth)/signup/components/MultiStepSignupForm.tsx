@@ -152,16 +152,6 @@ export default function MultiStepSignupForm() {
           </div>
         </form>
       )}
-
-      <div className="text-center text-sm mt-6">
-        <span className="text-gray-600">Already have an account? </span>
-        <Link
-          href="/login"
-          className="text-blue-600 hover:underline font-medium hover:text-blue-700 transition-colors"
-        >
-          Login
-        </Link>
-      </div>
     </div>
   );
 }
