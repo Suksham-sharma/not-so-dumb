@@ -76,7 +76,7 @@ export default function SolanaWalletButton({
           variant="neutral"
           className="py-2 px-3 rounded-xl transition-all hover:bg-red-100 text-sm min-w-[120px]"
         >
-          Disconnect Wallet
+          Disconnect&nbsp;<span className="hidden sm:inline">Wallet</span>
         </Button>
       </div>
     </div>
