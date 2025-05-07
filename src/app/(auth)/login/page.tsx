@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 import AuthFormWrapper from "../components/AuthFormWrapper";
 import FormInput from "../components/FormInput";
 import Link from "next/link";
+import { useSolanaAuth } from "@/hooks/useSolanaAuth";
+import SolanaWalletButton from "@/components/SolanaWalletButton";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -28,6 +30,7 @@ export default function LoginPage() {
   });
 
   const { login } = useAuth();
+  const router = useRouter();
 
   const onSubmit = async (data: LoginFormData) => {
     try {
@@ -93,6 +96,16 @@ export default function LoginPage() {
             {isSubmitting ? "Logging in..." : "Login →"}
           </span>
         </Button>
+
+        <div className="relative flex items-center py-2">
+          <div className="flex-grow border-t border-gray-300"></div>
+          <span className="flex-shrink mx-4 text-gray-600 text-sm">OR</span>
+          <div className="flex-grow border-t border-gray-300"></div>
+        </div>
+
+        <div className="flex justify-center mb-4">
+          <SolanaWalletButton onLogin={() => router.push("/quiz")} />
+        </div>
 
         <div className="text-center text-sm mt-6">
           <span className="text-gray-600">Don&apos;t have an account? </span>

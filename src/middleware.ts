@@ -1,10 +1,35 @@
-import { NextResponse } from "next/server";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
-export async function middleware(request: NextRequest) {
-  let token: string | undefined;
+const protectedPaths = [
+  "/home",
+  "/quiz/test",
+  "/quiz",
+  "/profile",
+  "/second-brain",
+  "/api/tags",
+  "/api/resources",
+  "/api/brain-chat",
+];
 
+export const authRoutes = ["/login", "/signup"];
+
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  if (pathname.match(/^\/quiz\/[^/]+$/) && pathname !== "/quiz/test") {
+    return NextResponse.next();
+  }
+
+  const isProtectedPath = protectedPaths.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`)
+  );
+
+  if (!isProtectedPath) {
+    return NextResponse.next();
+  }
+
+  let token: string | undefined;
   const authHeader = request.headers.get("Authorization");
   if (authHeader?.startsWith("Bearer ")) {
     token = authHeader.split(" ")[1];
@@ -15,31 +40,6 @@ export async function middleware(request: NextRequest) {
     token = tokenFromCookie?.value;
   }
 
-  const protectedPaths = [
-    "/home",
-    "/quiz/test",
-    "/quiz",
-    "/profile",
-    "/second-brain",
-    "/api/tags",
-    "/api/resources",
-    "/api/brain-chat",
-  ];
-  const isProtectedPath = protectedPaths.some(
-    (path) => request.nextUrl.pathname === path
-  );
-
-  if (
-    request.nextUrl.pathname.match(/^\/quiz\/[^/]+$/) &&
-    request.nextUrl.pathname !== "/quiz/test"
-  ) {
-    return NextResponse.next();
-  }
-
-  if (!isProtectedPath) {
-    return NextResponse.next();
-  }
-
   if (!token) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
@@ -47,12 +47,21 @@ export async function middleware(request: NextRequest) {
   try {
     const { payload } = await jwtVerify(
       token,
-      new TextEncoder().encode(process.env.JWT_SECRET || "fallback-secret")
+      new TextEncoder().encode(
+        process.env.JWT_SECRET_KEY ||
+          process.env.JWT_SECRET ||
+          "fallback-secret"
+      )
     );
 
     const response = NextResponse.next();
 
-    response.headers.set("x-user-id", payload.userId as string);
+    if (payload.userId) {
+      response.headers.set("x-user-id", payload.userId as string);
+    } else if (payload.walletAddress) {
+      response.headers.set("x-user-id", payload.walletAddress as string);
+    }
+
     return response;
   } catch (error) {
     return NextResponse.redirect(new URL("/login", request.url));

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
-
+import SolanaWalletProvider from "@/providers/SolanaWalletProvider";
 import { Toaster } from "sonner";
 
 const dmSans = DM_Sans({ subsets: ["latin"] });
@@ -21,8 +21,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={dmSans.className} suppressHydrationWarning>
         <ThemeProvider>
-          {children}
-          <Toaster richColors />
+          <SolanaWalletProvider>
+            {children}
+            <Toaster richColors />
+          </SolanaWalletProvider>
         </ThemeProvider>
       </body>
     </html>

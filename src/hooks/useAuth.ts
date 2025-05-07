@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { authService, LoginFormData } from "@/services/auth";
 import { toastStyles } from "@/lib/styles";
 import axios from "axios";
+import { useAuthStore } from "@/store/auth";
 
 export interface SignupFormData {
   email: string;
@@ -12,11 +13,13 @@ export interface SignupFormData {
 
 export const useAuth = () => {
   const router = useRouter();
+  const setAuthMethod = useAuthStore((state) => state.setAuthMethod);
 
   const login = async (data: LoginFormData) => {
     try {
       const { token, user } = await authService.login(data);
       authService.saveAuthData(token, user);
+      setAuthMethod("email");
       document.cookie = `token=${token}; path=/; max-age=604800`;
       toast.success("Login successful!", {
         className: toastStyles.success,
@@ -43,6 +46,7 @@ export const useAuth = () => {
     try {
       const { token, user } = await authService.signup(data);
       authService.saveAuthData(token, user);
+      setAuthMethod("email");
       document.cookie = `token=${token}; path=/; max-age=604800`;
       toast.success("Account created successfully!", {
         className: toastStyles.success,
