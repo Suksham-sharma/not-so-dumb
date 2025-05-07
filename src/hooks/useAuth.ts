@@ -24,6 +24,7 @@ export const useAuth = () => {
       toast.success("Login successful!", {
         className: toastStyles.success,
       });
+      console.log("Login successful!");
       await router.push("/quiz");
       router.refresh();
     } catch (error) {

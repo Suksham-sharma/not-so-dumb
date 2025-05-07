@@ -26,17 +26,13 @@ const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
 interface ResultsDisplayProps {
   section: ChatSection;
   isLoading: boolean;
-  onToggleReasoning: () => void;
   onViewTavilyData: () => void;
-  onViewReasoningInput: () => void;
 }
 
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   section,
   isLoading,
-  onToggleReasoning,
   onViewTavilyData,
-  onViewReasoningInput,
 }) => {
   return (
     <div className="bg-transparent mx-2 md:mx-4">
@@ -109,7 +105,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-0 mb-4 md:mb-6">
             <div className="flex items-center gap-2 md:gap-3">
               <SourceIcon className="w-5 h-5 md:w-6 md:h-6 text-black" />
-              <h3 className="text-lg md:text-xl font-bold text-black font-heading">
+              <h3 className="text-lg md:text-xl text-black font-heading">
                 Sources
               </h3>
             </div>
@@ -211,7 +207,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   );
 };
 
-// Import SearchResultCard component
 import SearchResultCard from "./SearchResultCard";
 
 export default ResultsDisplay;

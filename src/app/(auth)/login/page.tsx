@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 import AuthFormWrapper from "../components/AuthFormWrapper";
 import FormInput from "../components/FormInput";
 import Link from "next/link";
-import { useSolanaAuth } from "@/hooks/useSolanaAuth";
 import SolanaWalletButton from "@/components/SolanaWalletButton";
 
 const loginSchema = z.object({

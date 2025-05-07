@@ -31,12 +31,10 @@ export interface TavilyResponse {
 export interface ChatSection {
   query: string;
   searchResults: SearchResult[];
-  reasoning: string;
   response: string;
   error?: string | null;
   isLoadingSources?: boolean;
   isLoadingThinking?: boolean;
-  isReasoningCollapsed?: boolean;
 }
 
 export interface SuggestionType {

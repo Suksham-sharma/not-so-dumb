@@ -48,9 +48,7 @@ export async function middleware(request: NextRequest) {
     const { payload } = await jwtVerify(
       token,
       new TextEncoder().encode(
-        process.env.JWT_SECRET_KEY ||
-          process.env.JWT_SECRET ||
-          "fallback-secret"
+        process.env.JWT_SECRET || process.env.JWT_SECRET || "fallback-secret"
       )
     );
 
