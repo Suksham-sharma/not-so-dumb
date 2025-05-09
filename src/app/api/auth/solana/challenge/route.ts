@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { webcrypto } from "crypto";
-
-// In-memory storage (in production you'd use Redis or database)
-const challengeStore = new Map<
-  string,
-  { challenge: string; createdAt: number }
->();
+import { challengeStore, cleanupExpiredChallenges } from "@/lib/challengeStore";
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,16 +13,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate a random challenge
     const challenge = generateChallenge();
 
-    // Store the challenge with expiration (5 minutes)
     challengeStore.set(walletAddress, {
       challenge,
       createdAt: Date.now(),
     });
 
-    // Clean up expired challenges (older than 5 minutes)
     cleanupExpiredChallenges();
 
     return NextResponse.json({ challenge });
@@ -40,9 +32,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Generate a random challenge string
 function generateChallenge(): string {
-  // Create a message that the user needs to sign
   const randomBytes = webcrypto.getRandomValues(new Uint8Array(32));
   const timestamp = Date.now();
   const message = `Sign this message to authenticate with our app: ${Buffer.from(
@@ -51,17 +41,3 @@ function generateChallenge(): string {
 
   return message;
 }
-
-// Clean up challenges older than 5 minutes
-function cleanupExpiredChallenges() {
-  const now = Date.now();
-  const expirationTime = 5 * 60 * 1000; // 5 minutes
-
-  challengeStore.forEach((value, key) => {
-    if (now - value.createdAt > expirationTime) {
-      challengeStore.delete(key);
-    }
-  });
-}
-
-export { challengeStore };

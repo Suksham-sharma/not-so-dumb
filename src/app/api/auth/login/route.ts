@@ -11,7 +11,7 @@ export async function POST(request: Request) {
       where: { email },
     });
 
-    if (!user) {
+    if (!user || !user.password) {
       return NextResponse.json(
         { error: "Account not found. Please check your email or sign up." },
         { status: 401 }

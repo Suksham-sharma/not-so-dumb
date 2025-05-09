@@ -15,6 +15,7 @@ export async function POST(request: Request) {
     } = await request.json();
     console.log("Request Body:", { type, url, title, tags, content });
     const userId = request.headers.get("x-user-id");
+    console.log("User ID:", userId);
 
     if (!userId) {
       return NextResponse.json({ error: "User ID not found" }, { status: 401 });

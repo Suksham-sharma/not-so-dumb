@@ -8,14 +8,15 @@ datasource db {
 }
 
 model User {
-    id        String     @id @default(cuid())
-    email     String     @unique
-    password  String
-    name      String?
-    createdAt DateTime   @default(now())
-    updatedAt DateTime   @updatedAt
-    resources Resource[]
-    Tag       Tag[]
+    id            String     @id @default(cuid())
+    email         String?    @unique
+    password      String?
+    walletAddress String?    @unique
+    name          String?
+    createdAt     DateTime   @default(now())
+    updatedAt     DateTime   @updatedAt
+    resources     Resource[]
+    Tag           Tag[]
 }
 
 model Quiz {
