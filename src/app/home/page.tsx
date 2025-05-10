@@ -47,7 +47,7 @@ export default function Home() {
     handleInputChange,
     handleSubmit: handleAiSubmit,
     append,
-    isLoading: aiIsLoading,
+    status: aiIsLoading,
   } = useChat({
     api: "/api/openai",
     id: "research-chat",
@@ -158,7 +158,7 @@ export default function Home() {
         setChatSections
       );
 
-      const { reasoningInput, sourcesTable } = prepareReasoningInput(
+      const { reasoningInput } = prepareReasoningInput(
         input,
         resultsWithImages,
         searchData
@@ -213,7 +213,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-white/50" />
         <motion.div className="absolute left-1/2 top-1/2 h-[300px] md:h-[500px] w-[300px] md:w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-purple-300 to-blue-100/30 blur-3xl" />
 
-        <main className="mx-auto py-4 px-2 md:p-6 relative max-w-7xl">
+        <main className="mx-auto py-4 px-2 md:px-6 relative max-w-8xl">
           <AnimatePresence mode="wait">
             {!hasSubmitted ? (
               <LandingView

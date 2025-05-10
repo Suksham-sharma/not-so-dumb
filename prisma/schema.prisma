@@ -59,3 +59,11 @@ model Resource {
     user      User     @relation(fields: [userId], references: [id])
     tags      Tag[]
 }
+
+model Challenge {
+    id            String   @id @default(cuid())
+    walletAddress String   @unique
+    challenge     String
+    createdAt     DateTime @default(now())
+    expiresAt     DateTime
+}

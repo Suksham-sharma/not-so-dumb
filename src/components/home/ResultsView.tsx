@@ -58,7 +58,7 @@ export default function ResultsView({
       {chatSections.map((section, index) => (
         <div
           key={index}
-          className="border-2 border-black bg-bg/60 rounded-xl hover:shadow-none mx-2 md:mx-0"
+          className="bg-bg/60 rounded-xl hover:shadow-none mx-2 md:mx-0"
         >
           <ResultsDisplay
             section={section}

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PublicKey } from "@solana/web3.js";
 import { sign } from "tweetnacl";
-import { challengeStore } from "@/lib/challengeStore";
+import { getChallenge, deleteChallenge } from "@/lib/challengeStore";
 import { SignJWT } from "jose";
 import { getJwtSecretKey } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const storedChallenge = challengeStore.get(walletAddress);
+    const storedChallenge = await getChallenge(walletAddress);
     if (!storedChallenge || storedChallenge.challenge !== challenge) {
       return NextResponse.json(
         { error: "Invalid or expired challenge" },
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
 
-    challengeStore.delete(walletAddress);
+    await deleteChallenge(walletAddress);
 
     let user = await prisma.user.findUnique({
       where: { walletAddress },

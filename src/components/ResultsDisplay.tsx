@@ -35,7 +35,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   onViewTavilyData,
 }) => {
   return (
-    <div className="bg-transparent mx-2 md:mx-4">
+    <div className="bg-transparent">
       {/* Query */}
       <FadeIn className="my-4 md:my-8">
         <h2 className="text-2xl md:text-4xl font-bold text-black mb-2 md:mb-4">

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { webcrypto } from "crypto";
-import { challengeStore, cleanupExpiredChallenges } from "@/lib/challengeStore";
+import { setChallenge, cleanupExpiredChallenges } from "@/lib/challengeStore";
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,13 +14,8 @@ export async function POST(request: NextRequest) {
     }
 
     const challenge = generateChallenge();
-
-    challengeStore.set(walletAddress, {
-      challenge,
-      createdAt: Date.now(),
-    });
-
-    cleanupExpiredChallenges();
+    await setChallenge(walletAddress, challenge);
+    await cleanupExpiredChallenges();
 
     return NextResponse.json({ challenge });
   } catch (error) {
