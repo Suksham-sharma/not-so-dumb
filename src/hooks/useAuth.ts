@@ -24,9 +24,10 @@ export const useAuth = () => {
       toast.success("Login successful!", {
         className: toastStyles.success,
       });
-      console.log("Login successful!");
-      await router.push("/quiz");
-      router.refresh();
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      router.replace("/quiz");
     } catch (error) {
       const errorMessage = axios.isAxiosError(error)
         ? error.response?.data?.message ||

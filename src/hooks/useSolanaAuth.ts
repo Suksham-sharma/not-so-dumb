@@ -110,9 +110,9 @@ export const useSolanaAuth = () => {
         name: user?.name,
       });
 
-      // Redirect user
-      router.push("/quiz");
-      router.refresh();
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      router.replace("/quiz");
     } catch (error) {
       console.error("Wallet login failed:", error);
       const errorMessage =

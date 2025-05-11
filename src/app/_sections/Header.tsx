@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { FadeIn, GradientBlob } from "@/components/ui/motion";
+import { FadeIn } from "@/components/ui/motion";
 import YellowButton from "@/components/ui/yellow-button";
 import Link from "next/link";
 
@@ -14,7 +14,7 @@ export default function Header() {
       <div className="relative mx-auto w-full max-w-4xl px-4 py-16 text-center md:py-20 lg:py-[150px]">
         <FadeIn>
           <YellowButton className="mb-4 md:mb-6">
-            🚀 Think smarter, Learn faster
+            🧠 Your All-in-One Study Companion
           </YellowButton>
         </FadeIn>
 
@@ -22,9 +22,9 @@ export default function Header() {
           delay={0.1}
           className="text-3xl font-heading md:text-4xl lg:text-6xl"
         >
-          Supercharge Your Research{" "}
+          Your Digital{" "}
           <span className="relative inline-block">
-            <span className="relative z-10">& Learning</span>
+            <span className="relative z-10">Second Brain</span>
             <div className="absolute -bottom-1 md:-bottom-2 left-0 h-2 md:h-3 w-full bg-blue-300" />
           </span>
         </FadeIn>
@@ -33,8 +33,9 @@ export default function Header() {
           delay={0.2}
           className="mx-auto my-8 md:my-10 lg:my-12 max-w-2xl text-base font-normal leading-relaxed text-gray-600 md:text-xl lg:text-2xl lg:leading-relaxed"
         >
-          AI-powered research with instant quiz generation. Transform any
-          content into knowledge.
+          Intelligent research with web-powered LLM search, quiz generation from
+          any source, and a second brain that stores and interacts with all your
+          knowledge.
         </FadeIn>
 
         <FadeIn
@@ -56,7 +57,7 @@ export default function Header() {
                 size="lg"
                 className="w-full h-12 md:h-14 border-2 border-black px-6 md:px-8 text-base md:text-lg font-heading shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none lg:text-xl"
               >
-                Create Quiz
+                Generate Quiz
               </Button>
             </Link>
             <Link href="/second-brain" className="w-1/2 md:w-auto">
@@ -65,7 +66,7 @@ export default function Header() {
                 size="lg"
                 className="w-full h-12 md:h-14 border-2 border-black bg-blue-400 px-6 md:px-8 text-base md:text-lg font-heading shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none lg:text-xl"
               >
-                Second Brain
+                Access Brain
               </Button>
             </Link>
           </div>

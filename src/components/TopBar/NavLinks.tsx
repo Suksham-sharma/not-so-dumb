@@ -72,7 +72,11 @@ const NavLinks: React.FC<NavLinksProps> = ({ isMobile, onItemClick }) => {
     : navLinkStyles;
 
   return (
-    <nav className={`${isMobile ? "flex flex-col w-full" : "hidden md:flex items-center gap-3"}`}>
+    <nav
+      className={`${
+        isMobile ? "flex flex-col w-full" : "hidden md:flex items-center gap-3"
+      }`}
+    >
       {pathname !== "/home" && (
         <Link href="/home" className={linkClass} onClick={onItemClick}>
           Enhanced Search
