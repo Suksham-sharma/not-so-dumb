@@ -15,7 +15,7 @@ const protectedPaths = [
 export const authRoutes = ["/login", "/signup"];
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname, search } = request.nextUrl;
 
   if (pathname.match(/^\/quiz\/[^/]+$/) && pathname !== "/quiz/test") {
     return NextResponse.next();
@@ -41,7 +41,16 @@ export async function middleware(request: NextRequest) {
   }
 
   if (!token) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    // Extract destination from URL or use the current path
+    const urlSearchParams = new URLSearchParams(search);
+    const destination =
+      urlSearchParams.get("destination") || pathname.substring(1);
+
+    // Create login URL with destination
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("destination", destination);
+
+    return NextResponse.redirect(loginUrl);
   }
 
   try {
@@ -60,7 +69,16 @@ export async function middleware(request: NextRequest) {
 
     return response;
   } catch (error) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    // Extract destination from URL or use the current path
+    const urlSearchParams = new URLSearchParams(search);
+    const destination =
+      urlSearchParams.get("destination") || pathname.substring(1);
+
+    // Create login URL with destination
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("destination", destination);
+
+    return NextResponse.redirect(loginUrl);
   }
 }
 

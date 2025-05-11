@@ -11,11 +11,13 @@ import styles from "./SolanaWalletButton.module.css";
 interface SolanaWalletButtonProps {
   onLogin?: () => void;
   className?: string;
+  destination?: string;
 }
 
 export default function SolanaWalletButton({
   onLogin,
   className = "",
+  destination = "quiz",
 }: SolanaWalletButtonProps) {
   const { publicKey, connected, connecting } = useWallet();
   const { loginWithWallet, isVerifying, logoutWallet } = useSolanaAuth();
@@ -26,7 +28,7 @@ export default function SolanaWalletButton({
   const handleLoginWithWallet = async () => {
     try {
       setIsLoggingIn(true);
-      await loginWithWallet();
+      await loginWithWallet(destination);
       if (onLogin) onLogin();
     } finally {
       setIsLoggingIn(false);

@@ -22,7 +22,13 @@ const passwordSchema = z.object({
 type BasicInfoData = z.infer<typeof basicInfoSchema>;
 type PasswordData = z.infer<typeof passwordSchema>;
 
-export default function MultiStepSignupForm() {
+interface MultiStepSignupFormProps {
+  destination?: string;
+}
+
+export default function MultiStepSignupForm({
+  destination = "quiz",
+}: MultiStepSignupFormProps) {
   const [step, setStep] = useState(1);
   const [basicInfo, setBasicInfo] = useState<BasicInfoData | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -56,11 +62,14 @@ export default function MultiStepSignupForm() {
     if (!basicInfo) return;
 
     try {
-      await signup({
-        email: basicInfo.email,
-        name: basicInfo.name,
-        password: data.password,
-      });
+      await signup(
+        {
+          email: basicInfo.email,
+          name: basicInfo.name,
+          password: data.password,
+        },
+        destination
+      );
     } catch (error) {
       console.error("Signup failed:", error);
     }

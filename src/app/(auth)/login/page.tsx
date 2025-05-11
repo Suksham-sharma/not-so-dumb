@@ -5,11 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import AuthFormWrapper from "../components/AuthFormWrapper";
 import FormInput from "../components/FormInput";
 import Link from "next/link";
 import SolanaWalletButton from "@/components/SolanaWalletButton";
+import { useEffect, useState } from "react";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -30,13 +31,27 @@ export default function LoginPage() {
 
   const { login } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [destination, setDestination] = useState<string>("home");
+
+  useEffect(() => {
+    // Get destination from URL parameters
+    const destinationParam = searchParams.get("destination");
+    if (destinationParam) {
+      setDestination(destinationParam);
+    }
+  }, [searchParams]);
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await login(data);
+      await login(data, destination);
     } catch (error) {
       console.error("Login failed:", error);
     }
+  };
+
+  const handleSolanaLogin = () => {
+    router.push(`/${destination}`);
   };
 
   return (
@@ -102,13 +117,16 @@ export default function LoginPage() {
         </div>
 
         <div className="flex justify-center mb-2">
-          <SolanaWalletButton onLogin={() => router.push("/quiz")} />
+          <SolanaWalletButton
+            onLogin={handleSolanaLogin}
+            destination={destination}
+          />
         </div>
 
         <div className="text-center text-sm mt-6">
           <span className="text-gray-600">Don&apos;t have an account? </span>
           <Link
-            href="/signup"
+            href={`/signup?destination=${destination}`}
             className="text-blue-600 hover:underline font-medium hover:text-blue-700 transition-colors"
           >
             Sign up

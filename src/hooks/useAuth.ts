@@ -15,7 +15,7 @@ export const useAuth = () => {
   const router = useRouter();
   const setAuthMethod = useAuthStore((state) => state.setAuthMethod);
 
-  const login = async (data: LoginFormData) => {
+  const login = async (data: LoginFormData, destination = "quiz") => {
     try {
       const { token, user } = await authService.login(data);
       authService.saveAuthData(token, user);
@@ -27,7 +27,7 @@ export const useAuth = () => {
 
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      router.replace("/quiz");
+      router.replace(`/${destination}`);
     } catch (error) {
       const errorMessage = axios.isAxiosError(error)
         ? error.response?.data?.message ||
@@ -44,7 +44,7 @@ export const useAuth = () => {
     }
   };
 
-  const signup = async (data: SignupFormData) => {
+  const signup = async (data: SignupFormData, destination = "quiz") => {
     try {
       const { token, user } = await authService.signup(data);
       authService.saveAuthData(token, user);
@@ -53,7 +53,7 @@ export const useAuth = () => {
       toast.success("Account created successfully!", {
         className: toastStyles.success,
       });
-      router.push("/quiz");
+      router.push(`/${destination}`);
     } catch (error) {
       const errorMessage = axios.isAxiosError(error)
         ? error.response?.data?.message ||

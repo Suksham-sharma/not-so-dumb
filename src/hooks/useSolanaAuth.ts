@@ -41,7 +41,7 @@ export const useSolanaAuth = () => {
     checkExistingSession();
   }, [connected, publicKey]);
 
-  const loginWithWallet = async () => {
+  const loginWithWallet = async (destination = "quiz") => {
     try {
       if (!wallet) {
         toast.error("Please connect a wallet first", {
@@ -112,7 +112,7 @@ export const useSolanaAuth = () => {
 
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      router.replace("/quiz");
+      router.replace(`/${destination}`);
     } catch (error) {
       console.error("Wallet login failed:", error);
       const errorMessage =

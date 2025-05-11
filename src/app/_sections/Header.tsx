@@ -10,11 +10,25 @@ export default function Header() {
       {/* Decorative elements */}
       <div className="absolute inset-0 bg-gray-50/50" />
 
+      {/* Logo at top left */}
+      <div className="absolute top-6 left-6 md:top-8 md:left-8 lg:top-10 lg:left-10 z-10">
+        <Link
+          href="/"
+          className="text-2xl font-heading text-black tracking-tight flex items-center gap-2 hover:opacity-80 transition-opacity"
+        >
+          <span className="text-3xl">🧠</span>
+          <span className="relative">
+            notSoDumb
+            <div className="absolute -bottom-1 left-0 h-2 w-full bg-yellow-300 -z-10" />
+          </span>
+        </Link>
+      </div>
+
       {/* Content */}
       <div className="relative mx-auto w-full max-w-4xl px-4 py-16 text-center md:py-20 lg:py-[150px]">
         <FadeIn>
           <YellowButton className="mb-4 md:mb-6">
-            🧠 Your All-in-One Study Companion
+            Your All-in-One Study Companion 🔥
           </YellowButton>
         </FadeIn>
 
@@ -42,7 +56,7 @@ export default function Header() {
           delay={0.3}
           className="flex flex-col md:flex-row items-center justify-center gap-4"
         >
-          <Link href="/home" className="w-full md:w-auto">
+          <Link href="/home?destination=home" className="w-full md:w-auto">
             <Button
               size="lg"
               className="w-full h-12 md:h-14 border-2 border-black bg-green-400 px-6 md:px-8 text-base md:text-lg font-heading shadow-neo transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none lg:text-xl"
@@ -51,7 +65,7 @@ export default function Header() {
             </Button>
           </Link>
           <div className="flex flex-row gap-4 w-full md:w-auto">
-            <Link href="/quiz" className="w-1/2 md:w-auto">
+            <Link href="/quiz?destination=quiz" className="w-1/2 md:w-auto">
               <Button
                 variant="neutral"
                 size="lg"
@@ -60,7 +74,10 @@ export default function Header() {
                 Generate Quiz
               </Button>
             </Link>
-            <Link href="/second-brain" className="w-1/2 md:w-auto">
+            <Link
+              href="/second-brain?destination=second-brain"
+              className="w-1/2 md:w-auto"
+            >
               <Button
                 variant="neutral"
                 size="lg"
