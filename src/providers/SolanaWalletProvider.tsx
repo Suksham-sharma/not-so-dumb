@@ -33,7 +33,7 @@ export function SolanaWalletProvider({
       new SolflareWalletAdapter(),
       new CoinbaseWalletAdapter(),
     ],
-    [network]
+    []
   );
 
   return (
