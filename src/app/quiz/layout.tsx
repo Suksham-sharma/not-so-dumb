@@ -11,7 +11,7 @@ export default function QuizLayout({
       <TopBar />
       <div className="pt-14 pb-4 relative">
         <div className="absolute inset-0" />
-        <main className="mx-auto p-4 relative">{children}</main>
+        <main className="mx-auto px-2 py-3 md:p-4 relative">{children}</main>
       </div>
     </div>
   );

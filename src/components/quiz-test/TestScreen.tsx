@@ -162,7 +162,7 @@ const TestScreen: React.FC<TestScreenProps> = ({
   const currentQuestionData = questions[currentQuestion];
 
   return (
-    <div className="min-h-screen relative overflow-hidden p-4 md:p-8 ">
+    <div className="min-h-screen relative overflow-hidden p-2 md:p-8 ">
       <div className="absolute inset-0 bg-white/50" />
       <div className="relative max-w-7xl mx-auto mb-8">
         <FadeIn className="flex justify-between w-full items-center">

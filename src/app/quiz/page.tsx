@@ -28,7 +28,7 @@ export default function QuizPage() {
   };
 
   return (
-    <main className="mx-auto sm:p-4 relative">
+    <main className="mx-auto sm:p-2 relative">
       <QuizConfig onSubmit={handleQuizGeneration} isLoading={isLoading} />
     </main>
   );
