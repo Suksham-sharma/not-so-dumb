@@ -28,7 +28,7 @@ export default function Header() {
       <div className="relative mx-auto w-full max-w-4xl px-4 py-16 text-center md:py-20 lg:py-[150px]">
         <FadeIn>
           <YellowButton className="mb-4 md:mb-6">
-            Your All-in-One Study Companion 🔥
+            All-in-One Supercharged AI 🔥
           </YellowButton>
         </FadeIn>
 
@@ -38,7 +38,7 @@ export default function Header() {
         >
           Your Digital{" "}
           <span className="relative inline-block">
-            <span className="relative z-10">Second Brain</span>
+            <span className="relative z-10">AI Buddy</span>
             <div className="absolute -bottom-1 md:-bottom-2 left-0 h-2 md:h-3 w-full bg-blue-300" />
           </span>
         </FadeIn>
