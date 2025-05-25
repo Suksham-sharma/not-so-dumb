@@ -40,7 +40,7 @@ export default function LandingView({
         >
           Do research for your needs in seconds, so you can spend more time
           doing what actually matters.
-        </motion.p>
+        </motion.p>{" "}
       </div>
       <div className="w-full max-w-[704px]">
         <SearchInput

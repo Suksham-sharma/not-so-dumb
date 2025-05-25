@@ -21,6 +21,7 @@ const suggestions: SuggestionType[] = [
   { label: "Summarize", prefix: "Summarize " },
   { label: "Research", prefix: "Research " },
   { label: "How to", prefix: "How to " },
+  { label: "YouTube", prefix: "Analyze this YouTube video: " },
 ];
 
 const SearchInput: React.FC<SearchInputProps> = ({

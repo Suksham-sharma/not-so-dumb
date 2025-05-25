@@ -5,6 +5,7 @@ export interface Message {
   searchResults?: SearchResult[];
   fullTavilyData?: TavilyResponse;
   reasoningInput?: string;
+  youtubeData?: YouTubeVideo;
 }
 
 export interface TavilyImage {
@@ -35,9 +36,20 @@ export interface ChatSection {
   error?: string | null;
   isLoadingSources?: boolean;
   isLoadingThinking?: boolean;
+  youtubeVideo?: YouTubeVideo;
 }
 
 export interface SuggestionType {
   label: string;
   prefix: string;
+}
+
+export interface YouTubeVideo {
+  id: string;
+  title: string;
+  description: string;
+  thumbnail: string;
+  duration: string;
+  transcript?: string;
+  url: string;
 }

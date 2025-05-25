@@ -1,9 +1,17 @@
-import { NextResponse } from "next/server";
-import { Innertube } from "youtubei.js/web";
+import { NextRequest, NextResponse } from "next/server";
+import { Innertube } from "youtubei.js";
 
-export async function POST(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    const { url } = await request.json();
+    const { searchParams } = new URL(request.url);
+    const videoId = searchParams.get("videoId");
+
+    if (!videoId) {
+      return NextResponse.json(
+        { error: "Video ID is required" },
+        { status: 400 }
+      );
+    }
 
     const youtube = await Innertube.create({
       lang: "en",
@@ -11,39 +19,56 @@ export async function POST(request: Request) {
       retrieve_player: false,
     });
 
-    const regex =
-      /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/i;
-    const match = url.match(regex);
-    const videoId = match ? match[1] : null;
+    const video = await youtube.getInfo(videoId);
 
-    if (!videoId) {
-      return NextResponse.json(
-        { error: "Invalid YouTube URL" },
-        { status: 400 }
-      );
+    if (!video) {
+      return NextResponse.json({ error: "Video not found" }, { status: 404 });
     }
 
-    const info = await youtube.getInfo(videoId);
-    const transcriptData = await info.getTranscript();
-
-    if (!transcriptData?.transcript?.content?.body?.initial_segments) {
-      return NextResponse.json(
-        { error: "Failed to fetch transcript data" },
-        { status: 404 }
-      );
+    // Get transcript if available
+    let transcript = "";
+    try {
+      const transcriptData = await video.getTranscript();
+      if (transcriptData?.transcript?.content?.body?.initial_segments) {
+        transcript = transcriptData.transcript.content.body.initial_segments
+          .map((segment: any) => segment.snippet.text)
+          .join(" ")
+          .replace(/\n+/g, " ")
+          .trim();
+      }
+    } catch (error) {
+      console.warn("Transcript not available:", error);
     }
 
-    const transcript =
-      transcriptData.transcript.content.body.initial_segments.map(
-        (segment) => segment.snippet.text
-      );
+    const videoData = {
+      id: videoId,
+      title: video.basic_info.title || "Unknown Title",
+      description: video.basic_info.short_description || "",
+      thumbnail: video.basic_info.thumbnail?.[0]?.url || "",
+      duration: formatDuration(video.basic_info.duration || 0),
+      transcript,
+      url: `https://www.youtube.com/watch?v=${videoId}`,
+    };
 
-    return NextResponse.json({ transcript });
+    return NextResponse.json(videoData);
   } catch (error) {
-    console.error("Error fetching transcript:", error);
+    console.error("Error fetching YouTube video:", error);
     return NextResponse.json(
-      { error: "Failed to fetch transcript" },
+      { error: "Failed to fetch video information" },
       { status: 500 }
     );
   }
+}
+
+function formatDuration(seconds: number): string {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, "0")}:${remainingSeconds
+      .toString()
+      .padStart(2, "0")}`;
+  }
+  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 }

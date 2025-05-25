@@ -8,12 +8,14 @@ import AnimatedBlobs from "@/components/AnimatedBlobs";
 import SearchInput from "../../components/SearchInput";
 import LandingView from "@/components/home/LandingView";
 import ResultsView from "@/components/home/ResultsView";
+import YouTubeChatView from "@/components/home/YouTubeChatView";
 import TavilyModal from "@/components/home/TavilyModal";
 import {
   Message,
   ChatSection,
   SuggestionType,
   TavilyResponse,
+  YouTubeVideo,
 } from "../../types";
 import {
   fetchTavilyResults,
@@ -23,6 +25,12 @@ import {
   prepareReasoningInput,
   handleSearchError,
 } from "@/lib/searchUtils";
+import {
+  containsYouTubeUrl,
+  extractYouTubeUrl,
+  extractYouTubeVideoId,
+  fetchYouTubeVideoData,
+} from "@/lib/youtubeUtils";
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -38,6 +46,9 @@ export default function Home() {
   const [selectedMessageData, setSelectedMessageData] = useState<{
     tavily?: TavilyResponse;
   }>({});
+  const [currentYouTubeVideo, setCurrentYouTubeVideo] = useState<
+    YouTubeVideo | undefined
+  >(undefined);
   const abortControllerRef = useRef<AbortController | null>(null);
   const currentSectionIndexRef = useRef<number>(-1);
 
@@ -121,17 +132,49 @@ export default function Home() {
     }
     abortControllerRef.current = new AbortController();
 
-    const userMessage = { role: "user" as const, content: input };
+    // Check if input contains YouTube URL
+    const isYouTubeQuery = containsYouTubeUrl(input);
+    let youtubeVideo: YouTubeVideo | undefined = undefined;
+    let processedQuery = input;
+
+    if (isYouTubeQuery && !currentYouTubeVideo) {
+      const youtubeUrl = extractYouTubeUrl(input);
+      if (youtubeUrl) {
+        const videoId = extractYouTubeVideoId(youtubeUrl);
+        if (videoId) {
+          try {
+            const fetchedVideo = await fetchYouTubeVideoData(videoId);
+            if (fetchedVideo) {
+              youtubeVideo = fetchedVideo;
+              setCurrentYouTubeVideo(fetchedVideo);
+              processedQuery = input.replace(youtubeUrl, "").trim();
+              if (!processedQuery) {
+                processedQuery = `Analyze this video: ${youtubeVideo.title}`;
+              }
+            }
+          } catch (error) {
+            console.error("Failed to fetch YouTube video:", error);
+          }
+        }
+      }
+    }
+
+    const userMessage = {
+      role: "user" as const,
+      content: processedQuery,
+      youtubeData: youtubeVideo || currentYouTubeVideo,
+    };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
 
     const newSection: ChatSection = {
-      query: input,
+      query: processedQuery,
       searchResults: [],
       response: "",
       error: null,
       isLoadingSources: true,
+      youtubeVideo: youtubeVideo || currentYouTubeVideo || undefined,
     };
 
     setChatSections((prev) => [...prev, newSection]);
@@ -139,61 +182,108 @@ export default function Home() {
     currentSectionIndexRef.current = sectionIndex;
 
     try {
-      const searchResponse = await fetchTavilyResults(
-        input,
-        abortControllerRef.current
-      );
-      const searchData = searchResponse.data;
+      let reasoningInput = "";
 
-      if (!searchData.results || searchData.results.length === 0) {
-        throw new Error(
-          "No relevant search results found. Please try a different query."
+      if (youtubeVideo?.transcript || currentYouTubeVideo?.transcript) {
+        const videoForTranscript = youtubeVideo || currentYouTubeVideo;
+        reasoningInput = `User is asking about this YouTube video:
+Title: ${videoForTranscript!.title}
+Description: ${videoForTranscript!.description}
+Video URL: ${videoForTranscript!.url}
+
+${
+  videoForTranscript!.transcript
+    ? `Video Transcript:
+${videoForTranscript!.transcript}`
+    : "Note: No transcript available for this video."
+}
+
+User Question: ${processedQuery}
+
+Please answer the user's question based on the video content and transcript provided.`;
+
+        const assistantMessage: Message = {
+          role: "assistant",
+          content: "",
+          reasoning: "",
+          searchResults: [],
+          youtubeData: videoForTranscript,
+          reasoningInput,
+        };
+
+        setMessages((prev) => [...prev, assistantMessage]);
+        append({
+          role: "user",
+          content: reasoningInput,
+        });
+
+        setChatSections((prev) => {
+          const updated = [...prev];
+          if (updated[sectionIndex]) {
+            updated[sectionIndex] = {
+              ...updated[sectionIndex],
+              isLoadingSources: false,
+              isLoadingThinking: false,
+            };
+          }
+          return updated;
+        });
+      } else {
+        // Regular web search for non-YouTube queries or YouTube queries without transcript
+        const searchResponse = await fetchTavilyResults(
+          processedQuery,
+          abortControllerRef.current
         );
-      }
+        const searchData = searchResponse.data;
 
-      const resultsWithImages = processSearchResults(searchData);
-      updateSectionWithSearchResults(
-        sectionIndex,
-        resultsWithImages,
-        setChatSections
-      );
-
-      const { reasoningInput } = prepareReasoningInput(
-        input,
-        resultsWithImages,
-        searchData
-      );
-
-      const assistantMessage: Message = {
-        role: "assistant",
-        content: "",
-        reasoning: "",
-        searchResults: resultsWithImages,
-        fullTavilyData: searchData,
-        reasoningInput,
-      };
-
-      // Add empty assistant message to messages array
-      setMessages((prev) => [...prev, assistantMessage]);
-
-      // Send query to OpenAI
-      append({
-        role: "user",
-        content: `Query: ${input}\n\n${reasoningInput}`,
-      });
-
-      setChatSections((prev) => {
-        const updated = [...prev];
-        if (updated[sectionIndex]) {
-          updated[sectionIndex] = {
-            ...updated[sectionIndex],
-            searchResults: resultsWithImages,
-            isLoadingSources: false,
-            isLoadingThinking: false,
-          };
+        if (!searchData.results || searchData.results.length === 0) {
+          throw new Error(
+            "No relevant search results found. Please try a different query."
+          );
         }
-        return updated;
-      });
+
+        const resultsWithImages = processSearchResults(searchData);
+        updateSectionWithSearchResults(
+          sectionIndex,
+          resultsWithImages,
+          setChatSections
+        );
+
+        const { reasoningInput: webReasoningInput } = prepareReasoningInput(
+          processedQuery,
+          resultsWithImages,
+          searchData
+        );
+
+        const assistantMessage: Message = {
+          role: "assistant",
+          content: "",
+          reasoning: "",
+          searchResults: resultsWithImages,
+          fullTavilyData: searchData,
+          reasoningInput: webReasoningInput,
+          youtubeData: youtubeVideo || currentYouTubeVideo,
+        };
+
+        setMessages((prev) => [...prev, assistantMessage]);
+        append({
+          role: "user",
+          content: `Query: ${processedQuery}\n\n${webReasoningInput}`,
+        });
+
+        setChatSections((prev) => {
+          const updated = [...prev];
+          if (updated[sectionIndex]) {
+            updated[sectionIndex] = {
+              ...updated[sectionIndex],
+              searchResults: resultsWithImages,
+              isLoadingSources: false,
+              isLoadingThinking: false,
+            };
+          }
+          return updated;
+        });
+      }
     } catch (error: unknown) {
       handleSearchError(error, sectionIndex, setError, setChatSections);
     } finally {
@@ -224,6 +314,15 @@ export default function Home() {
                 selectedSuggestion={selectedSuggestion}
                 handleSuggestionClick={handleSuggestionClick}
               />
+            ) : currentYouTubeVideo ? (
+              <YouTubeChatView
+                video={currentYouTubeVideo}
+                chatSections={chatSections}
+                isLoading={isLoading}
+                messages={messages}
+                setShowTavilyModal={setShowTavilyModal}
+                setSelectedMessageData={setSelectedMessageData}
+              />
             ) : (
               <ResultsView
                 chatSections={chatSections}
@@ -245,6 +344,11 @@ export default function Home() {
               setInput={setInput}
               isLoading={isLoading}
               handleSubmit={handleSubmit}
+              placeholder={
+                currentYouTubeVideo
+                  ? "Ask about this video..."
+                  : "Ask a question..."
+              }
             />
           </div>
         </div>
