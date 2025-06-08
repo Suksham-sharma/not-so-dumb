@@ -11,6 +11,7 @@ interface LandingViewProps {
   handleSubmit: (e: React.FormEvent) => Promise<void>;
   selectedSuggestion: string | null;
   handleSuggestionClick: (suggestion: SuggestionType) => void;
+  onTagDetected?: (tags: string[]) => void;
 }
 
 export default function LandingView({
@@ -20,6 +21,7 @@ export default function LandingView({
   handleSubmit,
   selectedSuggestion,
   handleSuggestionClick,
+  onTagDetected,
 }: LandingViewProps) {
   return (
     <div className="min-h-[calc(100vh-8rem)] flex flex-col items-center justify-center px-4">
@@ -50,6 +52,8 @@ export default function LandingView({
           handleSubmit={handleSubmit}
           selectedSuggestion={selectedSuggestion}
           handleSuggestionClick={handleSuggestionClick}
+          onTagDetected={onTagDetected}
+          showQuickTags={true}
           showSuggestions={true}
         />
       </div>
